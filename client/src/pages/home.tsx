@@ -1,0 +1,171 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { MobileHeader } from "@/components/mobile-header";
+import { PortfolioOverview } from "@/components/portfolio-overview";
+import { QuickActions } from "@/components/quick-actions";
+import { DefiOpportunities } from "@/components/defi-opportunities";
+import { RecentTransactions } from "@/components/recent-transactions";
+import { BottomNavigation } from "@/components/bottom-navigation";
+import { RiskDisclosureModal } from "@/components/risk-disclosure-modal";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { GraduationCap, Vault } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+export default function Home() {
+  const [showRiskModal, setShowRiskModal] = useState(false);
+  const [selectedProtocolId, setSelectedProtocolId] = useState<number | null>(null);
+  const { toast } = useToast();
+
+  const investMutation = useMutation({
+    mutationFn: async ({ protocolId, amount, riskAccepted }: { protocolId: number; amount: number; riskAccepted: boolean }) => {
+      const response = await apiRequest("POST", "/api/defi/invest", {
+        protocolId,
+        amount,
+        riskAccepted
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/defi/positions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/portfolio"] });
+      toast({
+        title: "Investment Successful",
+        description: "Your DeFi investment has been processed successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Investment Failed",
+        description: "There was an error processing your investment. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleShowRiskModal = (protocolId: number) => {
+    setSelectedProtocolId(protocolId);
+    setShowRiskModal(true);
+  };
+
+  const handleAcceptRisk = () => {
+    if (selectedProtocolId) {
+      investMutation.mutate({
+        protocolId: selectedProtocolId,
+        amount: 100, // Default investment amount
+        riskAccepted: true
+      });
+    }
+    setShowRiskModal(false);
+    setSelectedProtocolId(null);
+  };
+
+  const handleQuickAction = (action: string) => {
+    toast({
+      title: `${action} Feature`,
+      description: `${action} functionality coming soon!`,
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <MobileHeader />
+      
+      <main className="max-w-md mx-auto pb-20">
+        <PortfolioOverview />
+        
+        <QuickActions
+          onOpenSend={() => handleQuickAction("Send")}
+          onOpenReceive={() => handleQuickAction("Receive")}
+          onOpenSwap={() => handleQuickAction("Swap")}
+          onOpenVault={() => handleQuickAction("Vault")}
+        />
+        
+        <DefiOpportunities onShowRiskModal={handleShowRiskModal} />
+        
+        <RecentTransactions />
+        
+        {/* Educational Section */}
+        <section className="px-4 mb-6">
+          <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <GraduationCap className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-base font-semibold text-primary">DeFi Learning Center</CardTitle>
+              </div>
+              <p className="text-sm text-neutral mb-4">New to DeFi? Learn how to maximize your yields safely.</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  className="bg-white text-blue-600 hover:bg-blue-50"
+                  onClick={() => handleQuickAction("Tutorial")}
+                >
+                  Start Tutorial
+                </Button>
+                <Button
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                  onClick={() => handleQuickAction("Risk Guide")}
+                >
+                  Risk Guide
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Vault Section */}
+        <section className="px-4 mb-6">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                    <Vault className="h-5 w-5 text-warning" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-primary">Bitcoin Vault</h3>
+                    <p className="text-xs text-neutral">Secure long-term storage</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-primary">0.12 BTC</p>
+                  <p className="text-xs text-neutral">Deposited</p>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-neutral">Time-locked until:</span>
+                  <span className="font-semibold text-primary">Dec 15, 2024</span>
+                </div>
+                <div className="flex items-center justify-between text-sm mt-2">
+                  <span className="text-neutral">Current yield:</span>
+                  <span className="font-semibold text-accent">4.2% APY</span>
+                </div>
+              </div>
+              
+              <Button
+                className="w-full bg-warning text-white hover:bg-yellow-600"
+                onClick={() => handleQuickAction("Add to Vault")}
+              >
+                Add to Vault
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
+
+      <BottomNavigation />
+      
+      <RiskDisclosureModal
+        isOpen={showRiskModal}
+        onClose={() => setShowRiskModal(false)}
+        onAccept={handleAcceptRisk}
+      />
+    </div>
+  );
+}
