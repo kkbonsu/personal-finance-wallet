@@ -11,7 +11,7 @@ import { BuyCryptoModal } from "@/components/buy-crypto-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Vault } from "lucide-react";
+import { Vault } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -90,35 +90,7 @@ export default function Home() {
         
         <RecentTransactions />
         
-        {/* Educational Section */}
-        <section className="px-4 mb-6">
-          <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <GraduationCap className="h-4 w-4 text-white" />
-                </div>
-                <CardTitle className="text-base font-semibold text-primary">DeFi Learning Center</CardTitle>
-              </div>
-              <p className="text-sm text-neutral mb-4">New to DeFi? Learn how to maximize your yields safely.</p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  className="bg-white text-blue-600 hover:bg-blue-50"
-                  onClick={() => handleQuickAction("Tutorial")}
-                >
-                  Start Tutorial
-                </Button>
-                <Button
-                  className="bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={() => handleQuickAction("Risk Guide")}
-                >
-                  Risk Guide
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+
 
         {/* Vault Section */}
         <section className="px-4 mb-6">
