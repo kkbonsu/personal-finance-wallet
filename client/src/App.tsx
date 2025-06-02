@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Wallet from "@/pages/wallet";
 import DeFi from "@/pages/defi";
+import VaultPage from "@/pages/vault";
 import History from "@/pages/history";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/wallet" component={Wallet} />
       <Route path="/defi" component={DeFi} />
+      <Route path="/vault" component={VaultPage} />
       <Route path="/history" component={History} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
