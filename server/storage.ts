@@ -5,6 +5,8 @@ import {
   type InsertDefiPosition, type VaultDeposit, type InsertVaultDeposit,
   type DefiProtocol, type InsertDefiProtocol 
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -33,6 +35,130 @@ export interface IStorage {
   // Vault operations
   getUserVaultDeposits(userId: number): Promise<VaultDeposit[]>;
   createVaultDeposit(deposit: InsertVaultDeposit): Promise<VaultDeposit>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getUserWallets(userId: number): Promise<Wallet[]> {
+    return await db.select().from(wallets).where(eq(wallets.userId, userId));
+  }
+
+  async getWallet(id: number): Promise<Wallet | undefined> {
+    const [wallet] = await db.select().from(wallets).where(eq(wallets.id, id));
+    return wallet || undefined;
+  }
+
+  async createWallet(insertWallet: InsertWallet): Promise<Wallet> {
+    const [wallet] = await db
+      .insert(wallets)
+      .values(insertWallet)
+      .returning();
+    return wallet;
+  }
+
+  async updateWalletBalance(id: number, balance: string, usdValue: string): Promise<void> {
+    await db
+      .update(wallets)
+      .set({ balance, usdValue })
+      .where(eq(wallets.id, id));
+  }
+
+  async getUserTransactions(userId: number, limit?: number): Promise<Transaction[]> {
+    const query = db
+      .select()
+      .from(transactions)
+      .where(eq(transactions.userId, userId))
+      .orderBy(transactions.timestamp);
+    
+    if (limit) {
+      return await query.limit(limit);
+    }
+    return await query;
+  }
+
+  async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
+    const [transaction] = await db
+      .insert(transactions)
+      .values(insertTransaction)
+      .returning();
+    return transaction;
+  }
+
+  async updateTransactionStatus(id: number, status: string, txHash?: string): Promise<void> {
+    await db
+      .update(transactions)
+      .set({ status, ...(txHash && { txHash }) })
+      .where(eq(transactions.id, id));
+  }
+
+  async getUserDefiPositions(userId: number): Promise<DefiPosition[]> {
+    return await db
+      .select()
+      .from(defiPositions)
+      .where(eq(defiPositions.userId, userId));
+  }
+
+  async createDefiPosition(insertPosition: InsertDefiPosition): Promise<DefiPosition> {
+    const [position] = await db
+      .insert(defiPositions)
+      .values(insertPosition)
+      .returning();
+    return position;
+  }
+
+  async updateDefiPosition(id: number, amount: string, usdValue: string): Promise<void> {
+    await db
+      .update(defiPositions)
+      .set({ amount, usdValue })
+      .where(eq(defiPositions.id, id));
+  }
+
+  async getActiveDefiProtocols(): Promise<DefiProtocol[]> {
+    return await db
+      .select()
+      .from(defiProtocols)
+      .where(eq(defiProtocols.isActive, true));
+  }
+
+  async createDefiProtocol(insertProtocol: InsertDefiProtocol): Promise<DefiProtocol> {
+    const [protocol] = await db
+      .insert(defiProtocols)
+      .values(insertProtocol)
+      .returning();
+    return protocol;
+  }
+
+  async getUserVaultDeposits(userId: number): Promise<VaultDeposit[]> {
+    return await db
+      .select()
+      .from(vaultDeposits)
+      .where(eq(vaultDeposits.userId, userId));
+  }
+
+  async createVaultDeposit(insertDeposit: InsertVaultDeposit): Promise<VaultDeposit> {
+    const [deposit] = await db
+      .insert(vaultDeposits)
+      .values(insertDeposit)
+      .returning();
+    return deposit;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -317,4 +443,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
