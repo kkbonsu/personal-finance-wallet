@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Vault, AlertTriangle } from "lucide-react";
-import { formatCurrency, formatPercentage, getRiskColor } from "@/lib/utils";
+import { formatCurrency, formatPercentage, getRiskColor, formatTVL } from "@/lib/utils";
 
 interface DefiProtocol {
   id: number;
@@ -199,7 +199,7 @@ export default function DeFi() {
                           <div className="flex items-center space-x-4">
                             <div>
                               <p className="text-xs text-neutral">TVL</p>
-                              <p className="text-sm font-semibold">{formatCurrency(parseFloat(protocol.tvl))}</p>
+                              <p className="text-sm font-semibold">{formatTVL(protocol.tvl)}</p>
                             </div>
                             <Badge className={getRiskColor(protocol.riskLevel)}>
                               {protocol.riskLevel} risk
