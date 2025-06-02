@@ -7,6 +7,7 @@ import { DefiOpportunities } from "@/components/defi-opportunities";
 import { RecentTransactions } from "@/components/recent-transactions";
 import { BottomNavigation } from "@/components/bottom-navigation";
 import { RiskDisclosureModal } from "@/components/risk-disclosure-modal";
+import { BuyCryptoModal } from "@/components/buy-crypto-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [showRiskModal, setShowRiskModal] = useState(false);
+  const [showBuyModal, setShowBuyModal] = useState(false);
   const [selectedProtocolId, setSelectedProtocolId] = useState<number | null>(null);
   const { toast } = useToast();
 
@@ -81,6 +83,7 @@ export default function Home() {
           onOpenReceive={() => handleQuickAction("Receive")}
           onOpenSwap={() => handleQuickAction("Swap")}
           onOpenVault={() => handleQuickAction("Vault")}
+          onOpenBuy={() => setShowBuyModal(true)}
         />
         
         <DefiOpportunities onShowRiskModal={handleShowRiskModal} />
@@ -165,6 +168,11 @@ export default function Home() {
         isOpen={showRiskModal}
         onClose={() => setShowRiskModal(false)}
         onAccept={handleAcceptRisk}
+      />
+      
+      <BuyCryptoModal
+        isOpen={showBuyModal}
+        onClose={() => setShowBuyModal(false)}
       />
     </div>
   );
