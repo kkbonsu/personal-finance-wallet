@@ -9,7 +9,7 @@ export function MobileHeader() {
           <div className="w-8 h-8 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
             <span className="text-white text-sm">⚡</span>
           </div>
-          <h1 className="text-lg font-semibold text-primary">LightningVault</h1>
+          <h1 className="text-lg font-semibold text-primary">Personal Wallet</h1>
         </div>
         <div className="flex items-center space-x-3">
           <Button variant="ghost" size="sm" className="p-2 rounded-lg hover:bg-gray-100">
