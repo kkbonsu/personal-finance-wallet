@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { formatCurrency, formatPercentage, getRiskColor } from "@/lib/utils";
+import { formatCurrency, formatPercentage, getRiskColor, formatTVL } from "@/lib/utils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useState } from "react";
 
@@ -124,7 +124,7 @@ export function DefiOpportunities({ onShowRiskModal }: DefiOpportunitiesProps) {
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
                     <p className="text-xs text-neutral">TVL</p>
-                    <p className="text-sm font-semibold">{formatCurrency(parseFloat(protocol.tvl))}</p>
+                    <p className="text-sm font-semibold">{formatTVL(protocol.tvl)}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs text-neutral">Your stake</p>
