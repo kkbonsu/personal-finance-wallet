@@ -3,13 +3,6 @@
  * Provides a unified interface for Spark SDK and Starknet.js integration
  */
 
-import { Buffer } from 'buffer';
-
-// Polyfill for browser compatibility
-if (typeof window !== 'undefined') {
-  window.Buffer = Buffer;
-}
-
 // Core wallet types
 export interface WalletConfig {
   network: 'mainnet' | 'testnet' | 'regtest';

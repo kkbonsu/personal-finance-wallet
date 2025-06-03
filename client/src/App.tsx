@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { WalletSDKProvider } from "@/contexts/WalletSDKContext";
 import { WalletLockScreen } from "@/components/wallet-lock-screen";
 import Home from "@/pages/home";
 import Wallet from "@/pages/wallet";
@@ -53,11 +54,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <SettingsProvider>
-          <AuthProvider>
-            <TooltipProvider>
-              <AppContent />
-            </TooltipProvider>
-          </AuthProvider>
+          <WalletSDKProvider>
+            <AuthProvider>
+              <TooltipProvider>
+                <AppContent />
+              </TooltipProvider>
+            </AuthProvider>
+          </WalletSDKProvider>
         </SettingsProvider>
       </ThemeProvider>
     </QueryClientProvider>
