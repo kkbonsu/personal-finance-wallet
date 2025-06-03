@@ -14,6 +14,7 @@ import DeFi from "@/pages/defi";
 import VaultPage from "@/pages/vault";
 import History from "@/pages/history";
 import SettingsPage from "@/pages/settings";
+import IntegrationDemo from "@/pages/integration-demo";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/vault" component={VaultPage} />
       <Route path="/history" component={History} />
       <Route path="/profile" component={SettingsPage} />
+      <Route path="/integration" component={IntegrationDemo} />
       <Route component={NotFound} />
     </Switch>
   );
