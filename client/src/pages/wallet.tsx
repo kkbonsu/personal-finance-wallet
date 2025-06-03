@@ -1,6 +1,8 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { MobileHeader } from "@/components/mobile-header";
 import { BottomNavigation } from "@/components/bottom-navigation";
+import { SendModal } from "@/components/send-modal";
+import { ReceiveModal } from "@/components/receive-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +23,8 @@ interface Wallet {
 
 export default function Wallet() {
   const [showBalances, setShowBalances] = useState(true);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
   const { toast } = useToast();
 
   const { data: wallets, isLoading } = useQuery<Wallet[]>({
@@ -179,11 +183,20 @@ export default function Wallet() {
 
                     {/* Action Buttons */}
                     <div className="flex space-x-2">
-                      <Button className="flex-1" size="sm">
+                      <Button 
+                        className="flex-1" 
+                        size="sm"
+                        onClick={() => setShowSendModal(true)}
+                      >
                         <Send className="h-4 w-4 mr-2" />
                         Send
                       </Button>
-                      <Button variant="outline" className="flex-1" size="sm">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" 
+                        size="sm"
+                        onClick={() => setShowReceiveModal(true)}
+                      >
                         <QrCode className="h-4 w-4 mr-2" />
                         Receive
                       </Button>
@@ -216,6 +229,16 @@ export default function Wallet() {
       </main>
 
       <BottomNavigation />
+
+      <SendModal
+        isOpen={showSendModal}
+        onClose={() => setShowSendModal(false)}
+      />
+
+      <ReceiveModal
+        isOpen={showReceiveModal}
+        onClose={() => setShowReceiveModal(false)}
+      />
     </div>
   );
 }

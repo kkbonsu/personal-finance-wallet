@@ -150,6 +150,16 @@ export default function Home() {
         isOpen={showBuyModal}
         onClose={() => setShowBuyModal(false)}
       />
+
+      <SendModal
+        isOpen={showSendModal}
+        onClose={() => setShowSendModal(false)}
+      />
+
+      <ReceiveModal
+        isOpen={showReceiveModal}
+        onClose={() => setShowReceiveModal(false)}
+      />
     </div>
   );
 }
