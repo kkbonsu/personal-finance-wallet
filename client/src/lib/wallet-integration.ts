@@ -12,39 +12,10 @@ export type WalletEvent =
   | { type: 'connected'; connected: boolean }
   | { type: 'error'; error: string };
 
-export interface WalletProvider {
-  // Connection management
-  isConnected(): boolean;
-  connect(): Promise<boolean>;
-  disconnect(): Promise<void>;
-  
-  // Account management
-  getAccounts(): Promise<WalletAccount[]>;
-  getSelectedAccount(): Promise<WalletAccount | null>;
-  switchAccount(address: string): Promise<boolean>;
-  
-  // Transaction methods
-  signMessage(message: string): Promise<string>;
-  signTransaction(transaction: any): Promise<string>;
-  sendTransaction(transaction: any): Promise<Transaction>;
-  
-  // Network-specific methods
-  sendBitcoin(to: string, amount: string, options?: { feeRate?: number }): Promise<Transaction>;
-  payLightningInvoice(invoice: string): Promise<Transaction>;
-  createLightningInvoice(amount: number, description: string): Promise<any>;
-  callStarknetContract(call: any): Promise<Transaction>;
-  
-  // Event handling
-  on(event: string, callback: (data: any) => void): void;
-  off(event: string, callback: (data: any) => void): void;
-  
-  // Utility methods
-  getNetworks(): string[];
-  getCurrentNetwork(): string;
-  switchNetwork(network: string): Promise<boolean>;
-}
+// Import the main interface from wallet-provider
+import { PersonalWalletAPI, WalletConnection } from './wallet-provider';
 
-class PersonalWalletProvider implements WalletProvider {
+class WalletIntegrationProvider {
   private connected = false;
   private selectedAccount: WalletAccount | null = null;
   private eventListeners: Map<string, ((data: any) => void)[]> = new Map();
