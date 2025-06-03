@@ -73,13 +73,13 @@ export default function DeFi() {
           </div>
 
           {/* Risk Warning */}
-          <Card className="mb-6 border-yellow-200 bg-yellow-50">
+          <Card className="mb-6 border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
             <CardContent className="p-4">
               <div className="flex items-start space-x-3">
                 <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-yellow-800 mb-1">DeFi Risk Notice</h3>
-                  <p className="text-sm text-yellow-700">
+                  <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-1">DeFi Risk Notice</h3>
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
                     DeFi investments carry inherent risks including smart contract vulnerabilities, 
                     impermanent loss, and market volatility. Only invest what you can afford to lose.
                   </p>

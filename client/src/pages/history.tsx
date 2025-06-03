@@ -4,7 +4,7 @@ import { BottomNavigation } from "@/components/bottom-navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowDown, ArrowUp, Coins, Filter } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Coins, Filter } from "lucide-react";
 import { formatCurrency, timeAgo, getNetworkIcon, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -201,7 +201,7 @@ export default function History() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <MobileHeader />
       
       <main className="max-w-md mx-auto pb-20">

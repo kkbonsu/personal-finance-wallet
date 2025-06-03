@@ -93,14 +93,14 @@ export function RecentTransactions() {
   return (
     <section className="px-4 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-primary">Recent Activity</h2>
-        <button className="text-sm text-secondary font-medium">View All</button>
+        <h2 className="text-lg font-semibold text-primary dark:text-white">Recent Activity</h2>
+        <button className="text-sm text-secondary dark:text-blue-400 font-medium">View All</button>
       </div>
       
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
         {transactions?.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-neutral text-sm">No transactions yet</p>
+            <p className="text-neutral dark:text-gray-400 text-sm">No transactions yet</p>
           </div>
         ) : (
           transactions?.map((transaction) => (
@@ -109,8 +109,8 @@ export function RecentTransactions() {
                 {getTransactionIcon(transaction.type)}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-primary">{transaction.description}</p>
-                <p className="text-xs text-neutral">
+                <p className="font-semibold text-primary dark:text-white">{transaction.description}</p>
+                <p className="text-xs text-neutral dark:text-gray-400">
                   {getNetworkIcon(transaction.network)} {transaction.network} • {timeAgo(new Date(transaction.timestamp))}
                 </p>
               </div>
@@ -118,7 +118,7 @@ export function RecentTransactions() {
                 <p className={`font-semibold ${getAmountColor(transaction.type)}`}>
                   {formatAmount(transaction)}
                 </p>
-                <p className="text-xs text-neutral">
+                <p className="text-xs text-neutral dark:text-gray-400">
                   {parseFloat(transaction.fee) > 0 && `${formatCurrency(parseFloat(transaction.fee), "BTC")} fee`}
                 </p>
               </div>
