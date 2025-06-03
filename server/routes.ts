@@ -4,6 +4,27 @@ import { storage } from "./storage";
 import { insertTransactionSchema, insertDefiPositionSchema, insertVaultDepositSchema } from "@shared/schema";
 import { z } from "zod";
 
+function generateMockAddress(type: string): string {
+  if (type === "bitcoin") {
+    // Generate a mock Bitcoin address (bech32 format)
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let address = "bc1q";
+    for (let i = 0; i < 39; i++) {
+      address += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return address;
+  } else if (type === "usdt") {
+    // Generate a mock TRON address
+    const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    let address = "T";
+    for (let i = 0; i < 33; i++) {
+      address += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return address;
+  }
+  return "";
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Portfolio overview endpoint
   app.get("/api/portfolio", async (req, res) => {
@@ -41,6 +62,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(wallets);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch wallets" });
+    }
+  });
+
+  app.post("/api/wallets", async (req, res) => {
+    try {
+      const userId = 1;
+      const { type } = req.body;
+      
+      if (!type || !["bitcoin", "usdt"].includes(type)) {
+        return res.status(400).json({ error: "Invalid wallet type" });
+      }
+
+      // Generate mock wallet data for demo
+      const newWallet = {
+        userId,
+        type,
+        network: type === "bitcoin" ? "bitcoin" : "tron",
+        address: generateMockAddress(type),
+        balance: "0.00000000",
+        usdValue: "0.00"
+      };
+
+      const wallet = await storage.createWallet(newWallet);
+      res.json(wallet);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create wallet" });
     }
   });
 
