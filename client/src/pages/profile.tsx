@@ -12,15 +12,11 @@ import {
   User, 
   Shield, 
   Bell, 
-  Smartphone, 
   HelpCircle, 
   FileText, 
   LogOut,
   Settings,
-  Moon,
   Globe,
-  Lock,
-  AlertTriangle,
   Key,
   Fingerprint,
   Clock,
@@ -28,7 +24,8 @@ import {
   EyeOff,
   Copy,
   CheckCircle,
-  Palette
+  Palette,
+  AlertTriangle
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -130,31 +127,31 @@ export default function Profile() {
       <main className="max-w-md mx-auto pb-20">
         {/* Profile Header */}
         <section className="px-4 py-6">
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center">
                   <User className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-primary">Demo User</h2>
-                  <p className="text-sm text-neutral">demo@lightningvault.app</p>
-                  <Badge className="mt-1 bg-green-100 text-green-800">Verified</Badge>
+                  <h2 className="text-xl font-bold text-primary dark:text-white">Demo User</h2>
+                  <p className="text-sm text-neutral dark:text-gray-400">demo@personalwallet.app</p>
+                  <Badge className="mt-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Verified</Badge>
                 </div>
               </div>
               
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-600">
                 <div className="text-center">
-                  <p className="text-lg font-bold text-primary">2</p>
-                  <p className="text-xs text-neutral">Wallets</p>
+                  <p className="text-lg font-bold text-primary dark:text-white">3</p>
+                  <p className="text-xs text-neutral dark:text-gray-400">Networks</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-bold text-primary">1</p>
-                  <p className="text-xs text-neutral">DeFi Position</p>
+                  <p className="text-lg font-bold text-primary dark:text-white">1</p>
+                  <p className="text-xs text-neutral dark:text-gray-400">DeFi Position</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-bold text-primary">15</p>
-                  <p className="text-xs text-neutral">Transactions</p>
+                  <p className="text-lg font-bold text-primary dark:text-white">15</p>
+                  <p className="text-xs text-neutral dark:text-gray-400">Transactions</p>
                 </div>
               </div>
             </CardContent>
@@ -163,7 +160,7 @@ export default function Profile() {
 
         {/* Settings Sections */}
         <section className="px-4 space-y-4">
-          {/* Security */}
+          {/* Security Settings */}
           <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2 text-base dark:text-white">
@@ -408,6 +405,8 @@ export default function Profile() {
                 </Select>
               </div>
 
+              <Separator className="dark:bg-gray-600" />
+
               {/* Notifications */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -450,74 +449,11 @@ export default function Profile() {
                 </div>
               </Button>
               
+              <Separator className="dark:bg-gray-600" />
+
               <Button variant="destructive" className="w-full mt-4 dark:bg-red-700 dark:hover:bg-red-600">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
-              </Button>
-            </CardContent>
-          </Card>
-        </section>
-      </main>
-
-      <BottomNavigation />
-    </div>
-  );
-}
-                    <p className="text-xs text-neutral">USD</p>
-                  </div>
-                </div>
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Support */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-base">
-                <HelpCircle className="h-5 w-5" />
-                <span>Support</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="ghost" className="w-full justify-start p-0">
-                <HelpCircle className="h-4 w-4 text-neutral mr-3" />
-                <span>Help Center</span>
-              </Button>
-              
-              <Button variant="ghost" className="w-full justify-start p-0">
-                <FileText className="h-4 w-4 text-neutral mr-3" />
-                <span>Terms of Service</span>
-              </Button>
-              
-              <Button variant="ghost" className="w-full justify-start p-0">
-                <Shield className="h-4 w-4 text-neutral mr-3" />
-                <span>Privacy Policy</span>
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Risk Warning */}
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardContent className="p-4">
-              <div className="flex items-start space-x-3">
-                <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-yellow-800 mb-1">Important Notice</h3>
-                  <p className="text-sm text-yellow-700">
-                    This is a demo version. All transactions and balances are simulated. 
-                    Do not use real cryptocurrency or private keys.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Logout */}
-          <Card>
-            <CardContent className="p-4">
-              <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-red-50">
-                <LogOut className="h-4 w-4 mr-3" />
-                <span>Sign Out</span>
               </Button>
             </CardContent>
           </Card>
