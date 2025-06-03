@@ -94,37 +94,37 @@ export default function Home() {
 
         {/* Vault Section */}
         <section className="px-4 mb-6">
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                    <Vault className="h-5 w-5 text-warning" />
+                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                    <Vault className="h-5 w-5 text-warning dark:text-orange-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-primary">Bitcoin Vault</h3>
-                    <p className="text-xs text-neutral">Secure long-term storage</p>
+                    <h3 className="font-semibold text-primary dark:text-white">Bitcoin Vault</h3>
+                    <p className="text-xs text-neutral dark:text-gray-400">Secure long-term storage</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-primary">0.12 BTC</p>
-                  <p className="text-xs text-neutral">Deposited</p>
+                  <p className="font-semibold text-primary dark:text-white">0.12 BTC</p>
+                  <p className="text-xs text-neutral dark:text-gray-400">Deposited</p>
                 </div>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-3 mb-4">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-neutral">Time-locked until:</span>
-                  <span className="font-semibold text-primary">Dec 15, 2024</span>
+                  <span className="text-neutral dark:text-gray-400">Time-locked until:</span>
+                  <span className="font-semibold text-primary dark:text-white">Dec 15, 2024</span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-2">
-                  <span className="text-neutral">Current yield:</span>
-                  <span className="font-semibold text-accent">4.2% APY</span>
+                  <span className="text-neutral dark:text-gray-400">Current yield:</span>
+                  <span className="font-semibold text-accent dark:text-green-400">4.2% APY</span>
                 </div>
               </div>
               
               <Button
-                className="w-full bg-warning text-white hover:bg-yellow-600"
+                className="w-full bg-warning text-white hover:bg-yellow-600 dark:bg-orange-600 dark:hover:bg-orange-700"
                 onClick={() => handleQuickAction("Add to Vault")}
               >
                 Add to Vault

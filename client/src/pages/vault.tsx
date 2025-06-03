@@ -107,26 +107,26 @@ export default function VaultPage() {
               <Vault className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-primary">Bitcoin Vault</h1>
-              <p className="text-sm text-neutral">Secure long-term storage</p>
+              <h1 className="text-2xl font-bold text-primary dark:text-white">Bitcoin Vault</h1>
+              <p className="text-sm text-neutral dark:text-gray-400">Secure long-term storage</p>
             </div>
           </div>
 
           {/* Vault Overview */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="p-4 text-center">
                 <Vault className="h-8 w-8 text-warning mx-auto mb-2" />
-                <p className="text-2xl font-bold text-primary">{totalDeposited.toFixed(8)} BTC</p>
-                <p className="text-sm text-neutral">Total Deposited</p>
+                <p className="text-2xl font-bold text-primary dark:text-white">{totalDeposited.toFixed(8)} BTC</p>
+                <p className="text-sm text-neutral dark:text-gray-400">Total Deposited</p>
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="p-4 text-center">
                 <TrendingUp className="h-8 w-8 text-accent mx-auto mb-2" />
-                <p className="text-2xl font-bold text-primary">{formatCurrency(totalValue)}</p>
-                <p className="text-sm text-neutral">Total Value</p>
+                <p className="text-2xl font-bold text-primary dark:text-white">{formatCurrency(totalValue)}</p>
+                <p className="text-sm text-neutral dark:text-gray-400">Total Value</p>
               </CardContent>
             </Card>
           </div>
@@ -135,61 +135,61 @@ export default function VaultPage() {
         {/* Tabs */}
         <section className="px-4">
           <Tabs defaultValue="deposits" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="deposits">My Deposits</TabsTrigger>
-              <TabsTrigger value="new">New Deposit</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 dark:bg-gray-800">
+              <TabsTrigger value="deposits" className="dark:data-[state=active]:bg-gray-700">My Deposits</TabsTrigger>
+              <TabsTrigger value="new" className="dark:data-[state=active]:bg-gray-700">New Deposit</TabsTrigger>
             </TabsList>
             
             <TabsContent value="deposits" className="mt-6">
               {isLoading ? (
                 <div className="space-y-4 animate-pulse">
-                  <div className="h-24 bg-gray-200 rounded-xl"></div>
-                  <div className="h-24 bg-gray-200 rounded-xl"></div>
+                  <div className="h-24 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
+                  <div className="h-24 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
                 </div>
               ) : activeDeposits.length === 0 ? (
-                <Card>
+                <Card className="dark:bg-gray-800 dark:border-gray-700">
                   <CardContent className="p-8 text-center">
                     <Vault className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="font-semibold text-primary mb-2">No Active Deposits</h3>
-                    <p className="text-sm text-neutral mb-4">Start earning yield by depositing Bitcoin</p>
+                    <h3 className="font-semibold text-primary dark:text-white mb-2">No Active Deposits</h3>
+                    <p className="text-sm text-neutral dark:text-gray-400 mb-4">Start earning yield by depositing Bitcoin</p>
                     <Button size="sm">Make First Deposit</Button>
                   </CardContent>
                 </Card>
               ) : (
                 <div className="space-y-3">
                   {activeDeposits.map((deposit) => (
-                    <Card key={deposit.id}>
+                    <Card key={deposit.id} className="dark:bg-gray-800 dark:border-gray-700">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div>
-                            <h3 className="font-semibold text-primary">{parseFloat(deposit.amount).toFixed(8)} BTC</h3>
-                            <p className="text-sm text-neutral">{formatCurrency(parseFloat(deposit.usdValue))}</p>
+                            <h3 className="font-semibold text-primary dark:text-white">{parseFloat(deposit.amount).toFixed(8)} BTC</h3>
+                            <p className="text-sm text-neutral dark:text-gray-400">{formatCurrency(parseFloat(deposit.usdValue))}</p>
                           </div>
                           <div className="text-right">
-                            <Badge className="bg-green-100 text-green-800 mb-1">
+                            <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 mb-1">
                               {deposit.currentYield}% APY
                             </Badge>
                             <div className="flex items-center space-x-1">
                               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                              <span className="text-xs font-medium text-accent">Active</span>
+                              <span className="text-xs font-medium text-accent dark:text-green-400">Active</span>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-3">
                           <div className="flex items-center justify-between text-sm mb-2">
                             <div className="flex items-center space-x-2">
-                              <Clock className="h-4 w-4 text-neutral" />
-                              <span className="text-neutral">Lock Period:</span>
+                              <Clock className="h-4 w-4 text-neutral dark:text-gray-400" />
+                              <span className="text-neutral dark:text-gray-400">Lock Period:</span>
                             </div>
-                            <span className="font-semibold text-primary">{deposit.lockPeriod} days</span>
+                            <span className="font-semibold text-primary dark:text-white">{deposit.lockPeriod} days</span>
                           </div>
                           <div className="flex items-center justify-between text-sm">
                             <div className="flex items-center space-x-2">
-                              <Calendar className="h-4 w-4 text-neutral" />
-                              <span className="text-neutral">Unlocks on:</span>
+                              <Calendar className="h-4 w-4 text-neutral dark:text-gray-400" />
+                              <span className="text-neutral dark:text-gray-400">Unlocks on:</span>
                             </div>
-                            <span className="font-semibold text-primary">
+                            <span className="font-semibold text-primary dark:text-white">
                               {formatDate(new Date(deposit.unlockDate))}
                             </span>
                           </div>
@@ -211,9 +211,9 @@ export default function VaultPage() {
             </TabsContent>
             
             <TabsContent value="new" className="mt-6">
-              <Card>
+              <Card className="dark:bg-gray-800 dark:border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+                  <CardTitle className="flex items-center space-x-2 dark:text-white">
                     <Plus className="h-5 w-5" />
                     <span>New Vault Deposit</span>
                   </CardTitle>
@@ -221,7 +221,7 @@ export default function VaultPage() {
                 <CardContent className="space-y-6">
                   {/* Amount Input */}
                   <div>
-                    <Label htmlFor="amount" className="text-sm font-medium text-primary mb-2 block">
+                    <Label htmlFor="amount" className="text-sm font-medium text-primary dark:text-white mb-2 block">
                       Amount (BTC)
                     </Label>
                     <Input
@@ -231,16 +231,16 @@ export default function VaultPage() {
                       placeholder="0.01"
                       value={depositAmount}
                       onChange={(e) => setDepositAmount(e.target.value)}
-                      className="text-lg"
+                      className="text-lg dark:bg-gray-700 dark:border-gray-600"
                     />
-                    <p className="text-xs text-neutral mt-1">
+                    <p className="text-xs text-neutral dark:text-gray-400 mt-1">
                       Minimum: 0.001 BTC • Available: 0.24851 BTC
                     </p>
                   </div>
 
                   {/* Lock Period Selection */}
                   <div>
-                    <Label className="text-sm font-medium text-primary mb-3 block">
+                    <Label className="text-sm font-medium text-primary dark:text-white mb-3 block">
                       Lock Period
                     </Label>
                     <Select value={lockPeriod} onValueChange={setLockPeriod}>
@@ -264,25 +264,25 @@ export default function VaultPage() {
 
                   {/* Deposit Summary */}
                   {depositAmount && (
-                    <Card className="bg-orange-50 border-orange-200">
+                    <Card className="bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
                       <CardContent className="p-4">
-                        <h3 className="font-semibold text-primary mb-3">Deposit Summary</h3>
+                        <h3 className="font-semibold text-primary dark:text-white mb-3">Deposit Summary</h3>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-neutral">Amount</span>
-                            <span className="font-medium">{depositAmount} BTC</span>
+                            <span className="text-neutral dark:text-gray-400">Amount</span>
+                            <span className="font-medium dark:text-white">{depositAmount} BTC</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-neutral">Lock Period</span>
-                            <span className="font-medium">{selectedOption?.label}</span>
+                            <span className="text-neutral dark:text-gray-400">Lock Period</span>
+                            <span className="font-medium dark:text-white">{selectedOption?.label}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-neutral">APY</span>
-                            <span className="font-medium text-accent">{selectedOption?.apy}</span>
+                            <span className="text-neutral dark:text-gray-400">APY</span>
+                            <span className="font-medium text-accent dark:text-green-400">{selectedOption?.apy}</span>
                           </div>
-                          <div className="flex justify-between border-t pt-2">
-                            <span className="text-neutral">Estimated Value</span>
-                            <span className="font-semibold text-accent">
+                          <div className="flex justify-between border-t dark:border-orange-700 pt-2">
+                            <span className="text-neutral dark:text-gray-400">Estimated Value</span>
+                            <span className="font-semibold text-accent dark:text-green-400">
                               {formatCurrency(parseFloat(depositAmount) * 40000)}
                             </span>
                           </div>
@@ -292,13 +292,13 @@ export default function VaultPage() {
                   )}
 
                   {/* Security Notice */}
-                  <Card className="border-blue-200 bg-blue-50">
+                  <Card className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
                     <CardContent className="p-4">
                       <div className="flex items-start space-x-3">
-                        <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                        <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
                         <div>
-                          <h3 className="font-semibold text-blue-800 mb-1">Security Features</h3>
-                          <ul className="text-sm text-blue-700 space-y-1">
+                          <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-1">Security Features</h3>
+                          <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
                             <li>• Multi-signature cold storage</li>
                             <li>• Time-locked smart contracts</li>
                             <li>• Insurance coverage up to $1M</li>
