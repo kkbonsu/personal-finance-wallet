@@ -96,7 +96,7 @@ export default function VaultPage() {
   const selectedOption = lockPeriodOptions.find(option => option.value === lockPeriod);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <MobileHeader />
       
       <main className="max-w-md mx-auto pb-20">

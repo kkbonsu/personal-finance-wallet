@@ -23,17 +23,17 @@ export function RecentTransactions() {
   if (isLoading) {
     return (
       <section className="px-4 mb-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100 animate-pulse">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700 animate-pulse">
           {[1, 2, 3].map((i) => (
             <div key={i} className="p-4 flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gray-200 rounded-xl"></div>
+              <div className="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
               <div className="flex-1 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/2"></div>
               </div>
               <div className="text-right space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                <div className="h-3 bg-gray-200 rounded w-12"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-12"></div>
               </div>
             </div>
           ))}
