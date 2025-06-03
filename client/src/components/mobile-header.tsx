@@ -1,4 +1,4 @@
-import { Bell, Settings } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function MobileHeader() {
@@ -14,9 +14,6 @@ export function MobileHeader() {
         <div className="flex items-center space-x-3">
           <Button variant="ghost" size="sm" className="p-2 rounded-lg hover:bg-gray-100">
             <Bell className="h-4 w-4 text-neutral" />
-          </Button>
-          <Button variant="ghost" size="sm" className="p-2 rounded-lg hover:bg-gray-100">
-            <Settings className="h-4 w-4 text-neutral" />
           </Button>
         </div>
       </div>
