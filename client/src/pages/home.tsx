@@ -8,6 +8,8 @@ import { RecentTransactions } from "@/components/recent-transactions";
 import { BottomNavigation } from "@/components/bottom-navigation";
 import { RiskDisclosureModal } from "@/components/risk-disclosure-modal";
 import { BuyCryptoModal } from "@/components/buy-crypto-modal";
+import { SendModal } from "@/components/send-modal";
+import { ReceiveModal } from "@/components/receive-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 export default function Home() {
   const [showRiskModal, setShowRiskModal] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
   const [selectedProtocolId, setSelectedProtocolId] = useState<number | null>(null);
   const { toast } = useToast();
 
@@ -79,8 +83,8 @@ export default function Home() {
         <PortfolioOverview />
         
         <QuickActions
-          onOpenSend={() => handleQuickAction("Send")}
-          onOpenReceive={() => handleQuickAction("Receive")}
+          onOpenSend={() => setShowSendModal(true)}
+          onOpenReceive={() => setShowReceiveModal(true)}
           onOpenSwap={() => handleQuickAction("Swap")}
           onOpenVault={() => handleQuickAction("Vault")}
           onOpenBuy={() => setShowBuyModal(true)}
