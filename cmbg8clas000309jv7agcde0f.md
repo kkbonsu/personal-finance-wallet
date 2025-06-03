@@ -10,6 +10,8 @@ tags: app-development, finance, wallet, wallet-development
 
 ---
 
+Github repo: [https://github.com/kkbonsu/personal-finance-wallet](https://github.com/kkbonsu/personal-finance-wallet)
+
 This is my idea of where finance is headed in the coming decades. I believe wallet companies are going to become fintech-like and would provide users great opportunities to lend, borrow and invest at lightning speed. With the great breakthroughs that bitcoin, ethereum and web3 in general are making, sooner rather than later, there will be many personal (and business) finance companies that would be built on web3 infrastructure.
 
 I believe these technologies would eat the world of finance soon: Bitcoin, ZK-Starks and any innovation to scale these for the masses.
