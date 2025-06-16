@@ -6,10 +6,26 @@ import { z } from "zod";
 
 function generateMockAddress(type: string): string {
   if (type === "bitcoin") {
-    // Generate a mock Bitcoin address (bech32 format)
+    // Generate a mock Bitcoin Legacy address (P2PKH)
+    const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    let address = "1";
+    for (let i = 0; i < 33; i++) {
+      address += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return address;
+  } else if (type === "bitcoin-segwit") {
+    // Generate a mock Native Segwit address (bech32)
     const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
     let address = "bc1q";
     for (let i = 0; i < 39; i++) {
+      address += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return address;
+  } else if (type === "bitcoin-taproot") {
+    // Generate a mock Taproot address (bech32m)
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let address = "bc1p";
+    for (let i = 0; i < 58; i++) {
       address += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return address;
@@ -70,7 +86,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = 1;
       const { type } = req.body;
       
-      if (!type || !["bitcoin", "usdt"].includes(type)) {
+      if (!type || !["bitcoin", "bitcoin-segwit", "bitcoin-taproot", "usdt"].includes(type)) {
         return res.status(400).json({ error: "Invalid wallet type" });
       }
 
@@ -78,7 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newWallet = {
         userId,
         type,
-        network: type === "bitcoin" ? "bitcoin" : "tron",
+        network: type.startsWith("bitcoin") ? "bitcoin" : "tron",
         address: generateMockAddress(type),
         balance: "0.00000000",
         usdValue: "0.00"

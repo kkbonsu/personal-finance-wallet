@@ -3,6 +3,7 @@ import { MobileHeader } from "@/components/mobile-header";
 import { BottomNavigation } from "@/components/bottom-navigation";
 import { SendModal } from "@/components/send-modal";
 import { ReceiveModal } from "@/components/receive-modal";
+import { WalletTypeModal } from "@/components/wallet-type-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ export default function Wallet() {
   const [showBalances, setShowBalances] = useState(true);
   const [showSendModal, setShowSendModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showWalletTypeModal, setShowWalletTypeModal] = useState(false);
   const { toast } = useToast();
 
   const { data: wallets, isLoading } = useQuery<Wallet[]>({
@@ -62,15 +64,21 @@ export default function Wallet() {
   };
 
   const handleCreateWallet = () => {
-    // For demo purposes, create a Bitcoin wallet
-    // In a real app, this would show a modal to select wallet type
-    createWalletMutation.mutate("bitcoin");
+    setShowWalletTypeModal(true);
+  };
+
+  const handleWalletTypeSelect = (type: string) => {
+    createWalletMutation.mutate(type);
   };
 
   const getWalletIcon = (type: string) => {
     switch (type) {
       case "bitcoin":
         return "₿";
+      case "bitcoin-segwit":
+        return "⚡";
+      case "bitcoin-taproot":
+        return "🟠";
       case "usdt":
         return "₮";
       default:
@@ -82,10 +90,14 @@ export default function Wallet() {
     switch (type) {
       case "bitcoin":
         return "from-orange-400 to-orange-600";
+      case "bitcoin-segwit":
+        return "from-blue-400 to-blue-600";
+      case "bitcoin-taproot":
+        return "from-purple-400 to-purple-600";
       case "usdt":
         return "from-green-400 to-green-600";
       default:
-        return "from-blue-400 to-blue-600";
+        return "from-gray-400 to-gray-600";
     }
   };
 
@@ -134,9 +146,17 @@ export default function Wallet() {
                       <div className="flex items-center space-x-2">
                         <span className="text-2xl">{getWalletIcon(wallet.type)}</span>
                         <div>
-                          <h3 className="font-semibold capitalize">{wallet.type} Wallet</h3>
+                          <h3 className="font-semibold capitalize">
+                            {wallet.type === "bitcoin-segwit" 
+                              ? "Bitcoin Segwit" 
+                              : wallet.type === "bitcoin-taproot" 
+                                ? "Bitcoin Taproot"
+                                : wallet.type} Wallet
+                          </h3>
                           <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs">
                             {getNetworkIcon(wallet.network)} {wallet.network}
+                            {wallet.type === "bitcoin-segwit" && " • Native Segwit"}
+                            {wallet.type === "bitcoin-taproot" && " • Taproot"}
                           </Badge>
                         </div>
                       </div>
@@ -147,7 +167,7 @@ export default function Wallet() {
                       {showBalances ? (
                         <>
                           <p className="text-2xl font-bold">
-                            {wallet.type === "bitcoin" 
+                            {wallet.type.startsWith("bitcoin") 
                               ? `${parseFloat(wallet.balance).toFixed(8)} BTC`
                               : `${parseFloat(wallet.balance).toFixed(2)} USDT`
                             }
@@ -238,6 +258,12 @@ export default function Wallet() {
       <ReceiveModal
         isOpen={showReceiveModal}
         onClose={() => setShowReceiveModal(false)}
+      />
+
+      <WalletTypeModal
+        isOpen={showWalletTypeModal}
+        onClose={() => setShowWalletTypeModal(false)}
+        onSelectType={handleWalletTypeSelect}
       />
     </div>
   );
