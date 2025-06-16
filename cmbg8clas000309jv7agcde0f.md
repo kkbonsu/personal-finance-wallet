@@ -10,8 +10,6 @@ tags: app-development, finance, wallet, wallet-development
 
 ---
 
-Github repo: [https://github.com/kkbonsu/personal-finance-wallet](https://github.com/kkbonsu/personal-finance-wallet)
-
 This is my idea of where finance is headed in the coming decades. I believe wallet companies are going to become fintech-like and would provide users great opportunities to lend, borrow and invest at lightning speed. With the great breakthroughs that bitcoin, ethereum and web3 in general are making, sooner rather than later, there will be many personal (and business) finance companies that would be built on web3 infrastructure.
 
 I believe these technologies would eat the world of finance soon: Bitcoin, ZK-Starks and any innovation to scale these for the masses.
@@ -46,3 +44,12 @@ Upcoming Features
 4. An AI personal finance guru would be integrated to learn user data and recommend changes to financial lifestyle and suggest income opportunities
     
 5. An integration interface that will allow this wallet to be integrated into other apps like RateCardly and the like
+    
+
+Github repo: [https://github.com/kkbonsu/personal-finance-wallet](https://github.com/kkbonsu/personal-finance-wallet)
+
+If you’re interested in supporting my efforts in building this FOSS, you can send some BTC to this address: bc1qujm9s8ha7xc55mn7r8yr6ln9t979kez03umxnp
+
+Or USDT/STRK to this address:
+
+0x039245ae9eab8c325699343889b5f5a740c808164618bb78d8745649228d7ac7
