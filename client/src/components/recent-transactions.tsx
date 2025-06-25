@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDown, ArrowUp, Coins } from "lucide-react";
+import { useLocation } from "wouter";
+import { ArrowDown, ArrowUp, Coins, ChevronRight } from "lucide-react";
 import { formatCurrency, timeAgo, getNetworkIcon } from "@/lib/utils";
 
 interface Transaction {
@@ -15,6 +16,7 @@ interface Transaction {
 }
 
 export function RecentTransactions() {
+  const [, setLocation] = useLocation();
   const { data: transactions, isLoading } = useQuery<Transaction[]>({
     queryKey: ["/api/transactions"],
     select: (data) => data?.slice(0, 5) || [],
@@ -94,7 +96,13 @@ export function RecentTransactions() {
     <section className="px-4 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-primary dark:text-white">Recent Activity</h2>
-        <button className="text-sm text-secondary dark:text-blue-400 font-medium">View All</button>
+        <button 
+          onClick={() => setLocation("/transactions")}
+          className="text-sm text-secondary dark:text-blue-400 font-medium hover:text-blue-600 dark:hover:text-blue-300 flex items-center"
+        >
+          View All
+          <ChevronRight className="h-3 w-3 ml-1" />
+        </button>
       </div>
       
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
