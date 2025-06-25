@@ -48,7 +48,9 @@ Upcoming Features
 
 Github repo: [https://github.com/kkbonsu/personal-finance-wallet](https://github.com/kkbonsu/personal-finance-wallet)
 
-If you’re interested in supporting my efforts in building this FOSS, you can send some BTC to this address: bc1qujm9s8ha7xc55mn7r8yr6ln9t979kez03umxnp
+If you’re interested in supporting my efforts in building this FOSS, you can send some BTC to this address:
+
+<mark>sp1qq2vy9gjuwr64zfvtwj4td9a2kz0sts4u5d8wqdvqmzq3rv34c8gf7q7twcmz642ew5f50gj7r9sjxqr7fg2kccq86dr5trznk8d3dtgrj5asle8j</mark>
 
 Or USDT/STRK to this address:
 
