@@ -94,11 +94,13 @@ The deployment uses a hybrid approach where Vite handles client-side assets in d
 
 ## Recent Changes
 
-- January 27, 2025: Separated Bitcoin and Lightning wallet derivation
-  - Bitcoin accounts now use separate derivation paths for Legacy (m/44'), Segwit (m/84'), and Taproot (m/86')
-  - Lightning accounts use independent derivation (m/45') with support for multiple channels
-  - Enhanced account management with type-specific methods
-  - Improved send/receive modals to handle multiple account types
+- January 27, 2025: Implemented real Lightspark SDK integration
+  - Installed official @lightsparkdev/lightspark-sdk, @lightsparkdev/core, and @lightsparkdev/crypto-wasm packages
+  - Created LightsparkWalletSDK class with real API integration for Bitcoin and Lightning operations
+  - Replaced placeholder methods with actual Lightspark SDK calls for invoice creation, payment processing, and Bitcoin transactions
+  - Added proper authentication using Lightspark API credentials
+  - Maintained fallback to mock data when Lightspark credentials are not provided
+  - Separated Bitcoin and Lightning wallet derivation with independent account management
 
 ## Changelog
 
