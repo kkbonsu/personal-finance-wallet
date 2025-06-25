@@ -103,12 +103,49 @@ export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
 
   const payLightningInvoice = async (invoice: string, channelId: string = 'channel_1'): Promise<Transaction> => {
     if (!sdk) throw new Error('Wallet not initialized');
-    return sdk.payLightningInvoice(invoice, channelId);
+    
+    try {
+      // Try to use real Lightspark API first
+      if (lightsparkClient.isInitialized()) {
+        const payment = await lightsparkClient.payInvoice(invoice);
+        
+        return {
+          id: payment.id,
+          type: 'send',
+          amount: (payment.amount / 100000000).toString(), // Convert sats to BTC
+          fee: (payment.fee / 100000000).toString(),
+          status: payment.status.toLowerCase(),
+          timestamp: new Date(),
+          network: 'lightning',
+          txHash: payment.paymentHash
+        };
+      }
+      
+      // Fallback to SDK implementation
+      return sdk.payLightningInvoice(invoice, channelId);
+    } catch (error) {
+      console.error('Error paying Lightning invoice:', error);
+      throw error;
+    }
   };
 
   const createLightningInvoice = async (amount: number, description: string, channelId: string = 'channel_1') => {
     if (!sdk) throw new Error('Wallet not initialized');
-    return sdk.createLightningInvoice(amount, description, channelId);
+    
+    try {
+      // Try to use real Lightspark API first
+      if (lightsparkClient.isInitialized()) {
+        const amountMsats = amount * 100000; // Convert sats to millisatoshis
+        const invoice = await lightsparkClient.createInvoice(amountMsats, description);
+        return invoice;
+      }
+      
+      // Fallback to SDK implementation
+      return sdk.createLightningInvoice(amount, description, channelId);
+    } catch (error) {
+      console.error('Error creating Lightning invoice:', error);
+      throw error;
+    }
   };
 
   const sendStarknetTransaction = async (call: any): Promise<Transaction> => {
