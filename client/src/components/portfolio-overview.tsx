@@ -33,7 +33,7 @@ export function PortfolioOverview() {
   }
 
   const bitcoinWallet = portfolio?.wallets.find(w => w.type === "bitcoin");
-  const usdtWallet = portfolio?.wallets.find(w => w.type === "usdt");
+  const lightningWallet = portfolio?.wallets.find(w => w.type === "lightning");
 
   return (
     <section className="px-4 py-6">
@@ -64,11 +64,11 @@ export function PortfolioOverview() {
           
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3">
             <div className="flex items-center space-x-2 mb-2">
-              <div className="w-4 h-4 bg-green-400 rounded-full"></div>
-              <span className="text-sm font-medium">USDT</span>
+              <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+              <span className="text-sm font-medium">Lightning</span>
             </div>
-            <p className="text-lg font-semibold">{parseFloat(usdtWallet?.balance || "0").toFixed(2)}</p>
-            <p className="text-xs text-blue-100">{formatCurrency(parseFloat(usdtWallet?.usdValue || "0"))}</p>
+            <p className="text-lg font-semibold">{parseFloat(lightningWallet?.balance || "0").toFixed(8)} BTC</p>
+            <p className="text-xs text-blue-100">{formatCurrency(parseFloat(lightningWallet?.usdValue || "0"))}</p>
           </div>
         </div>
       </div>

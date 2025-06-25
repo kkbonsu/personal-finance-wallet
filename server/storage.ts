@@ -186,29 +186,37 @@ export class MemStorage implements IStorage {
     const user: User = { id: 1, username: "demo", password: "demo" };
     this.users.set(1, user);
 
-    // Create demo wallets
+    // Create demo wallets with proper Spark SDK derived addresses
     const bitcoinWallet: Wallet = {
       id: 1,
       userId: 1,
-      type: "bitcoin",
-      network: "lightning",
-      address: "lnbc1...",
-      balance: "0.24851000",
-      usdValue: "10234.56"
+      type: 'bitcoin',
+      network: 'bitcoin',
+      address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+      balance: '1.24578932',
+      usdValue: '42567.89',
+      publicKey: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
+      derivationPath: "m/84'/0'/0'/0/0",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
-    
-    const usdtWallet: Wallet = {
+
+    const lightningWallet: Wallet = {
       id: 2,
       userId: 1,
-      type: "usdt",
-      network: "lightning",
-      address: "lnbc1...",
-      balance: "2612.67000000",
-      usdValue: "2612.67"
+      type: 'lightning',
+      network: 'lightning',
+      address: '03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd',
+      balance: '0.15247000',
+      usdValue: '5234.12',
+      publicKey: '03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd',
+      derivationPath: "m/45'/0'/0'/0/0",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
     this.wallets.set(1, bitcoinWallet);
-    this.wallets.set(2, usdtWallet);
+    this.wallets.set(2, lightningWallet);
 
     // Create demo DeFi protocols
     const starknetProtocol: DefiProtocol = {

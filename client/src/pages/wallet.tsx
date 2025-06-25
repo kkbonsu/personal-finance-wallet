@@ -79,8 +79,8 @@ export default function Wallet() {
         return "⚡";
       case "bitcoin-taproot":
         return "🟠";
-      case "usdt":
-        return "₮";
+      case "lightning":
+        return "⚡";
       default:
         return "🪙";
     }
@@ -94,8 +94,8 @@ export default function Wallet() {
         return "from-blue-400 to-blue-600";
       case "bitcoin-taproot":
         return "from-purple-400 to-purple-600";
-      case "usdt":
-        return "from-green-400 to-green-600";
+      case "lightning":
+        return "from-yellow-400 to-yellow-600";
       default:
         return "from-gray-400 to-gray-600";
     }
@@ -167,9 +167,9 @@ export default function Wallet() {
                       {showBalances ? (
                         <>
                           <p className="text-2xl font-bold">
-                            {wallet.type.startsWith("bitcoin") 
+                            {wallet.type.startsWith("bitcoin") || wallet.type === "lightning"
                               ? `${parseFloat(wallet.balance).toFixed(8)} BTC`
-                              : `${parseFloat(wallet.balance).toFixed(2)} USDT`
+                              : `${parseFloat(wallet.balance).toFixed(8)} ${wallet.type.toUpperCase()}`
                             }
                           </p>
                           <p className="text-sm opacity-90">

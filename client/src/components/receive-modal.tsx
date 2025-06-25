@@ -16,7 +16,7 @@ interface ReceiveModalProps {
 }
 
 export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
-  const [network, setNetwork] = useState<"bitcoin" | "lightning" | "usdt">("lightning");
+  const [network, setNetwork] = useState<"bitcoin" | "lightning">("lightning");
   const [lightningAmount, setLightningAmount] = useState("");
   const [lightningDescription, setLightningDescription] = useState("");
   const [lightningInvoice, setLightningInvoice] = useState("");
@@ -30,8 +30,6 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
         return <Zap className="h-4 w-4" />;
       case "bitcoin":
         return <Bitcoin className="h-4 w-4" />;
-      case "usdt":
-        return <DollarSign className="h-4 w-4" />;
       default:
         return <QrCode className="h-4 w-4" />;
     }
@@ -42,8 +40,6 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
       // Default to Segwit address for receiving
       const segwitAccount = bitcoinAccounts.find(acc => acc.derivationPath?.includes("84'"));
       return segwitAccount?.address || bitcoinAccounts[0]?.address || "No Bitcoin wallet found";
-    } else if (network === "usdt") {
-      return "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs"; // Mock USDT address
     }
     return "";
   };
@@ -108,8 +104,8 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
           {/* Network Selection */}
           <div>
             <Label className="text-sm font-medium mb-3 block dark:text-white">Select Network</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {["lightning", "bitcoin", "usdt"].map((net) => (
+            <div className="grid grid-cols-2 gap-2">
+              {["lightning", "bitcoin"].map((net) => (
                 <Card 
                   key={net}
                   className={`cursor-pointer transition-all ${
@@ -128,7 +124,7 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
                     <div className="flex flex-col items-center space-y-2">
                       {getNetworkIcon(net)}
                       <span className="text-xs font-medium dark:text-white">
-                        {net === "lightning" ? "Lightning" : net === "bitcoin" ? "Bitcoin" : "USDT"}
+                        {net === "lightning" ? "Lightning" : "Bitcoin"}
                       </span>
                     </div>
                   </CardContent>
@@ -202,11 +198,11 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
             </div>
           )}
 
-          {/* Address Display for Bitcoin/USDT */}
-          {(network === "bitcoin" || network === "usdt") && (
+          {/* Address Display for Bitcoin */}
+          {network === "bitcoin" && (
             <div>
               <Label className="text-sm font-medium mb-3 block dark:text-white">
-                Your {network === "bitcoin" ? "Bitcoin" : "USDT"} Address
+                Your Bitcoin Address
               </Label>
               <Card className="dark:bg-gray-700 dark:border-gray-600">
                 <CardContent className="p-4">
