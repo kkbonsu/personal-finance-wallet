@@ -92,7 +92,20 @@ The deployment uses a hybrid approach where Vite handles client-side assets in d
 
 ## Recent Changes
 
-- June 25, 2025: Implemented Spark SDK integration following https://docs.spark.money/wallet/developer-guide/create-first-wallet
+- June 25, 2025: Successfully completed major application restructuring and feature implementation
+  - **Vault Removal**: Completely removed all vault functionality including UI components, API endpoints, and database schemas
+  - **DeFi to Invest Rebranding**: Renamed all DeFi references to "Invest" across components, pages, APIs, and database tables
+  - **Page-Based Navigation**: Converted modal-based flows to dedicated pages (/send, /receive, /swap, /buy) with smart back navigation
+  - **Smart Back Navigation**: Implemented URL parameter tracking (from=home/wallet) for proper navigation flow
+  - **Transactions Page**: Created comprehensive /transactions page with filtering, detailed transaction cards, and "View All" functionality
+  - **Navigation Consolidation**: Updated to clean 4-tab layout (Home, Wallet, Invest, Settings) instead of 5 tabs
+  - **API Cleanup**: Updated all endpoints from /api/defi/* to /api/invest/* and removed vault-related routes
+  - **Database Schema**: Updated to use invest_positions and invest_protocols tables
+  - **Component Fixes**: Resolved all import/export errors and modal reference issues
+  - **Wallet Integration**: Fixed Bitcoin wallet detection on Receive page with API fallback
+  - **User Experience**: Enhanced QuickActions with proper routing and improved transaction history display
+
+- Earlier June 25, 2025: Implemented Spark SDK integration following https://docs.spark.money/wallet/developer-guide/create-first-wallet
   - Removed incorrect Lightspark SDK packages due to React Native dependency conflicts
   - Created SparkWalletSDK class following Spark SDK patterns for Bitcoin and Lightning operations
   - Implemented proper Bitcoin derivation with Legacy (m/44'), SegWit (m/84'), and Taproot (m/86') paths
@@ -100,12 +113,6 @@ The deployment uses a hybrid approach where Vite handles client-side assets in d
   - Added BOLT11 invoice generation and parsing for Lightning transactions
   - Integrated real @scure/bip32, @scure/bip39, @noble/hashes cryptographic libraries
   - Completely removed all USDT functionality from the entire application
-  - Converted modal-based flows to dedicated pages: /send, /receive, /swap, /buy
-  - Implemented standard navigation flows for better user experience
-  - Updated QuickActions component to use page navigation instead of modals
-  - Removed vault functionality and all vault-related features
-  - Renamed DeFi to Invest throughout the application for better branding
-  - Updated navigation to remove vault tab and consolidate to 4 main tabs
   - Maintained separate Bitcoin and Lightning account management as per Spark architecture
 
 ## Changelog
