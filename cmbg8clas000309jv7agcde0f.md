@@ -54,4 +54,4 @@ If you’re interested in supporting my efforts in building this FOSS, you can s
 
 Or USDT/STRK to this address:
 
-0x039245ae9eab8c325699343889b5f5a740c808164618bb78d8745649228d7ac7
+<mark>0x039245ae9eab8c325699343889b5f5a740c808164618bb78d8745649228d7ac7</mark>
