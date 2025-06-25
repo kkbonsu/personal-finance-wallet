@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,15 @@ import { ArrowLeft, QrCode, Copy, Zap, Bitcoin, CheckCircle } from "lucide-react
 import { useToast } from "@/hooks/use-toast";
 import { useWalletSDK } from "@/contexts/WalletSDKContext";
 import { truncateAddress } from "@/lib/utils";
+
+interface Wallet {
+  id: number;
+  type: string;
+  network: string;
+  address: string;
+  balance: string;
+  usdValue: string;
+}
 
 export function ReceivePage() {
   const [, setLocation] = useLocation();
@@ -18,6 +28,11 @@ export function ReceivePage() {
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const { toast } = useToast();
   const { sdk, bitcoinAccounts, lightningAccounts, createLightningInvoice } = useWalletSDK();
+  
+  // Fetch wallets from API as fallback
+  const { data: wallets } = useQuery<Wallet[]>({
+    queryKey: ["/api/wallets"],
+  });
 
   const handleGenerateLightningInvoice = async () => {
     if (!lightningAmount) {
@@ -61,9 +76,15 @@ export function ReceivePage() {
 
   const getReceiveAddress = () => {
     if (network === "bitcoin") {
-      // Default to Segwit address for receiving
+      // Try SDK accounts first, then fallback to API data
       const segwitAccount = bitcoinAccounts.find(acc => acc.derivationPath?.includes("84'"));
-      return segwitAccount?.address || bitcoinAccounts[0]?.address || "No Bitcoin wallet found";
+      if (segwitAccount?.address) {
+        return segwitAccount.address;
+      }
+      
+      // Fallback to API wallet data
+      const bitcoinWallet = wallets?.find(w => w.type === "bitcoin" || w.network === "bitcoin");
+      return bitcoinWallet?.address || "No Bitcoin wallet found";
     }
     return "";
   };
