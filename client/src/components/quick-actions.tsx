@@ -1,22 +1,16 @@
 import { Send, QrCode, ArrowUpDown, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
-interface QuickActionsProps {
-  onOpenSend: () => void;
-  onOpenReceive: () => void;
-  onOpenSwap: () => void;
-  onOpenVault: () => void;
-  onOpenBuy: () => void;
-}
-
-export function QuickActions({ onOpenSend, onOpenReceive, onOpenSwap, onOpenVault, onOpenBuy }: QuickActionsProps) {
+export function QuickActions() {
+  const [, setLocation] = useLocation();
   return (
     <section className="px-4 mb-6">
       <div className="grid grid-cols-4 gap-3">
         <Button
           variant="outline"
           className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col items-center space-y-2 hover:shadow-md transition-shadow h-auto"
-          onClick={onOpenSend}
+          onClick={() => setLocation("/send")}
         >
           <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
             <Send className="h-5 w-5 text-secondary dark:text-blue-400" />
@@ -27,7 +21,7 @@ export function QuickActions({ onOpenSend, onOpenReceive, onOpenSwap, onOpenVaul
         <Button
           variant="outline"
           className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col items-center space-y-2 hover:shadow-md transition-shadow h-auto"
-          onClick={onOpenReceive}
+          onClick={() => setLocation("/receive")}
         >
           <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
             <QrCode className="h-5 w-5 text-accent dark:text-green-400" />
@@ -38,7 +32,7 @@ export function QuickActions({ onOpenSend, onOpenReceive, onOpenSwap, onOpenVaul
         <Button
           variant="outline"
           className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col items-center space-y-2 hover:shadow-md transition-shadow h-auto"
-          onClick={onOpenSwap}
+          onClick={() => setLocation("/swap")}
         >
           <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
             <ArrowUpDown className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -49,7 +43,7 @@ export function QuickActions({ onOpenSend, onOpenReceive, onOpenSwap, onOpenVaul
         <Button
           variant="outline"
           className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col items-center space-y-2 hover:shadow-md transition-shadow h-auto"
-          onClick={onOpenBuy}
+          onClick={() => setLocation("/buy")}
         >
           <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
             <ShoppingCart className="h-5 w-5 text-accent dark:text-green-400" />

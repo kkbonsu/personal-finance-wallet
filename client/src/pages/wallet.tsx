@@ -248,15 +248,7 @@ export default function Wallet() {
 
       <BottomNavigation />
 
-      <SendModal
-        isOpen={showSendModal}
-        onClose={() => setShowSendModal(false)}
-      />
 
-      <ReceiveModal
-        isOpen={showReceiveModal}
-        onClose={() => setShowReceiveModal(false)}
-      />
 
       <WalletTypeModal
         isOpen={showWalletTypeModal}

@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Vault, AlertTriangle } from "lucide-react";
 import { formatCurrency, formatPercentage, getRiskColor, formatTVL } from "@/lib/utils";
 
-interface DefiProtocol {
+interface InvestProtocol {
   id: number;
   name: string;
   poolName: string;
@@ -20,7 +20,7 @@ interface DefiProtocol {
   isActive: boolean;
 }
 
-interface DefiPosition {
+interface InvestPosition {
   id: number;
   protocolName: string;
   poolName: string;
@@ -31,13 +31,13 @@ interface DefiPosition {
   isActive: boolean;
 }
 
-export default function DeFi() {
-  const { data: protocols, isLoading: protocolsLoading } = useQuery<DefiProtocol[]>({
-    queryKey: ["/api/defi/protocols"],
+export default function Invest() {
+  const { data: protocols, isLoading: protocolsLoading } = useQuery<InvestProtocol[]>({
+    queryKey: ["/api/invest/protocols"],
   });
 
-  const { data: positions, isLoading: positionsLoading } = useQuery<DefiPosition[]>({
-    queryKey: ["/api/defi/positions"],
+  const { data: positions, isLoading: positionsLoading } = useQuery<InvestPosition[]>({
+    queryKey: ["/api/invest/positions"],
   });
 
   const totalInvested = positions?.reduce((sum, pos) => sum + parseFloat(pos.usdValue), 0) || 0;
