@@ -46,9 +46,7 @@ export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
     const config: WalletConfig = {
       network: 'testnet',
       sparkEndpoint: 'https://spark-testnet.buildonspark.com',
-      starknetEndpoint: 'https://starknet-testnet.public.blastapi.io',
-      lightsparkApiClientId: import.meta.env.VITE_LIGHTSPARK_API_CLIENT_ID || '0197a670ff194f890000b31055675ba5',
-      lightsparkApiClientSecret: import.meta.env.VITE_LIGHTSPARK_API_CLIENT_SECRET || 'S8WSAAT-ImYNajac6pS_DvsBF7qiBYPaTIuTkjBtVZo'
+      starknetEndpoint: 'https://starknet-testnet.public.blastapi.io'
     };
 
     const walletSDK = initializeWalletSDK(config);

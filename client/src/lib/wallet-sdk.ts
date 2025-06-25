@@ -4,11 +4,11 @@
  */
 
 import { 
-  LightsparkWalletSDK, 
-  LightsparkConfig,
-  LightsparkWalletAccount,
-  LightsparkTransaction,
-  LightsparkInvoice
+  SparkWalletSDK, 
+  SparkConfig,
+  SparkWalletAccount,
+  SparkTransaction,
+  SparkInvoice
 } from './lightspark-integration';
 
 // Core wallet types
@@ -16,8 +16,6 @@ export interface WalletConfig {
   network: 'mainnet' | 'testnet' | 'regtest';
   sparkEndpoint?: string;
   starknetEndpoint?: string;
-  lightsparkApiClientId?: string;
-  lightsparkApiClientSecret?: string;
 }
 
 export interface WalletAccount {
@@ -64,7 +62,7 @@ export class PersonalWalletSDK {
   private bitcoinAccounts: Map<string, WalletAccount> = new Map();
   private lightningAccounts: Map<string, WalletAccount> = new Map();
   private starknetAccounts: Map<string, WalletAccount> = new Map();
-  private lightsparkSDK: LightsparkWalletSDK | null = null;
+  private sparkSDK: SparkWalletSDK | null = null;
 
   constructor(config: WalletConfig) {
     this.config = config;
@@ -79,22 +77,19 @@ export class PersonalWalletSDK {
       this.mnemonic = this.generateMnemonic();
     }
     
-    // Initialize Lightspark SDK if credentials are provided
-    if (this.config.lightsparkApiClientId && this.config.lightsparkApiClientSecret) {
-      const lightsparkConfig: LightsparkConfig = {
-        apiTokenClientId: this.config.lightsparkApiClientId,
-        apiTokenClientSecret: this.config.lightsparkApiClientSecret,
-        network: this.config.network
-      };
-      
-      this.lightsparkSDK = new LightsparkWalletSDK(lightsparkConfig);
-      
-      try {
-        await this.lightsparkSDK.initialize();
-      } catch (error) {
-        console.warn('Failed to initialize Lightspark SDK:', error);
-        this.lightsparkSDK = null;
-      }
+    // Initialize Spark SDK
+    const sparkConfig: SparkConfig = {
+      network: this.config.network,
+      endpoint: this.config.sparkEndpoint
+    };
+    
+    this.sparkSDK = new SparkWalletSDK(sparkConfig);
+    
+    try {
+      await this.sparkSDK.initialize(this.mnemonic || undefined);
+    } catch (error) {
+      console.warn('Failed to initialize Spark SDK:', error);
+      this.sparkSDK = null;
     }
     
     // Initialize accounts from mnemonic
@@ -151,51 +146,40 @@ export class PersonalWalletSDK {
   }
 
   private async deriveLightningAccounts(): Promise<void> {
-    if (this.lightsparkSDK && this.lightsparkSDK.isConnected()) {
+    if (this.sparkSDK && this.sparkSDK.isConnected()) {
       try {
-        // Get real Lightning account from Lightspark
-        const lightsparkAccount = await this.lightsparkSDK.getAccount();
+        // Get real Lightning account from Spark SDK
+        const sparkAccount = await this.sparkSDK.getLightningAccount();
         
-        if (lightsparkAccount) {
+        if (sparkAccount) {
           const lightningAccount: WalletAccount = {
-            address: lightsparkAccount.address,
-            publicKey: lightsparkAccount.publicKey,
+            address: sparkAccount.address,
+            publicKey: sparkAccount.publicKey,
             network: 'lightning',
-            balance: lightsparkAccount.balance.toString(),
+            balance: sparkAccount.balance.toString(),
             type: 'lightning',
-            derivationPath: "m/45'/0'/0'/0/0"
+            derivationPath: sparkAccount.derivationPath
           };
           
-          this.lightningAccounts.set('lightspark_main', lightningAccount);
+          this.lightningAccounts.set('spark_main', lightningAccount);
           return;
         }
       } catch (error) {
-        console.warn('Failed to get Lightspark account, using fallback:', error);
+        console.warn('Failed to get Spark Lightning account, using fallback:', error);
       }
     }
 
-    // Fallback to mock accounts if Lightspark SDK is not available
+    // Fallback if Spark SDK is not available
     const lightningAccount: WalletAccount = {
       address: '03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd',
       publicKey: '03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd',
       network: 'lightning',
-      balance: '15247', // Balance in satoshis
+      balance: '15247',
       type: 'lightning',
       derivationPath: "m/45'/0'/0'/0/0"
     };
 
-    // Lightning channels can have multiple accounts
-    const lightningChannel2: WalletAccount = {
-      address: '02e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-      publicKey: '02e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-      network: 'lightning',
-      balance: '8432',
-      type: 'lightning',
-      derivationPath: "m/45'/0'/1'/0/0"
-    };
-
     this.lightningAccounts.set('channel_1', lightningAccount);
-    this.lightningAccounts.set('channel_2', lightningChannel2);
   }
 
   private async deriveStarknetAccounts(): Promise<void> {
@@ -214,30 +198,31 @@ export class PersonalWalletSDK {
 
   // Bitcoin operations
   async sendBitcoin(toAddress: string, amount: string, addressType: 'legacy' | 'segwit' | 'taproot' = 'segwit', feeRate?: number): Promise<Transaction> {
-    if (this.lightsparkSDK && this.lightsparkSDK.isConnected()) {
+    if (this.sparkSDK && this.sparkSDK.isConnected()) {
       try {
-        // Use real Lightspark SDK to send Bitcoin
+        // Use real Spark SDK to send Bitcoin
         const amountSats = Math.floor(parseFloat(amount) * 100000000); // Convert BTC to sats
-        const lightsparkTx = await this.lightsparkSDK.sendBitcoin(toAddress, amountSats);
+        const sparkTx = await this.sparkSDK.sendBitcoin(toAddress, amountSats, addressType);
         
         return {
-          id: lightsparkTx.id,
+          id: sparkTx.id,
           type: 'send',
-          amount: lightsparkTx.amount.toString(),
-          fee: lightsparkTx.fee.toString(),
-          status: lightsparkTx.status,
-          timestamp: lightsparkTx.timestamp,
+          amount: (sparkTx.amount / 100000000).toString(), // Convert back to BTC
+          fee: (sparkTx.fee / 100000000).toString(),
+          status: sparkTx.status,
+          timestamp: sparkTx.timestamp,
           network: 'bitcoin',
           toAddress,
-          fromAddress: lightsparkTx.fromAddress
+          fromAddress: sparkTx.fromAddress,
+          txHash: sparkTx.txHash
         };
       } catch (error) {
-        console.error('Lightspark Bitcoin send failed:', error);
+        console.error('Spark Bitcoin send failed:', error);
         throw error;
       }
     }
 
-    // Fallback for when Lightspark SDK is not available
+    // Fallback when Spark SDK is not available
     const bitcoinAccount = this.bitcoinAccounts.get(addressType);
     if (!bitcoinAccount) {
       throw new Error(`Bitcoin ${addressType} account not found`);
@@ -260,28 +245,28 @@ export class PersonalWalletSDK {
 
   // Lightning operations (separate from Bitcoin)
   async payLightningInvoice(invoice: string, channelId: string = 'channel_1'): Promise<Transaction> {
-    if (this.lightsparkSDK && this.lightsparkSDK.isConnected()) {
+    if (this.sparkSDK && this.sparkSDK.isConnected()) {
       try {
-        // Use real Lightspark SDK to pay invoice
-        const lightsparkTx = await this.lightsparkSDK.payInvoice(invoice);
+        // Use real Spark SDK to pay invoice
+        const sparkTx = await this.sparkSDK.payLightningInvoice(invoice);
         
         return {
-          id: lightsparkTx.id,
+          id: sparkTx.id,
           type: 'lightning',
-          amount: lightsparkTx.amount.toString(),
-          fee: lightsparkTx.fee.toString(),
-          status: lightsparkTx.status,
-          timestamp: lightsparkTx.timestamp,
+          amount: sparkTx.amount.toString(),
+          fee: sparkTx.fee.toString(),
+          status: sparkTx.status,
+          timestamp: sparkTx.timestamp,
           network: 'lightning',
           toAddress: 'lightning_invoice'
         };
       } catch (error) {
-        console.error('Lightspark payment failed:', error);
+        console.error('Spark Lightning payment failed:', error);
         throw error;
       }
     }
 
-    // Fallback for when Lightspark SDK is not available
+    // Fallback when Spark SDK is not available
     const lightningAccount = this.lightningAccounts.get(channelId);
     if (!lightningAccount) {
       throw new Error(`Lightning channel ${channelId} not found`);
@@ -290,8 +275,8 @@ export class PersonalWalletSDK {
     const tx: Transaction = {
       id: `ln_${Date.now()}`,
       type: 'lightning',
-      amount: '1000', // sats
-      fee: '1', // sats
+      amount: '1000',
+      fee: '1',
       status: 'pending',
       timestamp: new Date(),
       network: 'lightning',
@@ -303,25 +288,25 @@ export class PersonalWalletSDK {
   }
 
   async createLightningInvoice(amount: number, description: string, channelId: string = 'channel_1'): Promise<LightningInvoice> {
-    if (this.lightsparkSDK && this.lightsparkSDK.isConnected()) {
+    if (this.sparkSDK && this.sparkSDK.isConnected()) {
       try {
-        // Use real Lightspark SDK to create invoice
-        const lightsparkInvoice = await this.lightsparkSDK.createInvoice(amount, description);
+        // Use real Spark SDK to create invoice
+        const sparkInvoice = await this.sparkSDK.createLightningInvoice(amount, description);
         
         return {
-          paymentRequest: lightsparkInvoice.paymentRequest,
-          amount: lightsparkInvoice.amount,
-          description: lightsparkInvoice.description,
-          expiry: lightsparkInvoice.expiryTimestamp,
-          paymentHash: lightsparkInvoice.paymentHash
+          paymentRequest: sparkInvoice.paymentRequest,
+          amount: sparkInvoice.amount,
+          description: sparkInvoice.description,
+          expiry: sparkInvoice.expiryTimestamp,
+          paymentHash: sparkInvoice.paymentHash
         };
       } catch (error) {
-        console.error('Lightspark invoice creation failed:', error);
+        console.error('Spark Lightning invoice creation failed:', error);
         throw error;
       }
     }
 
-    // Fallback for when Lightspark SDK is not available
+    // Fallback when Spark SDK is not available
     const lightningAccount = this.lightningAccounts.get(channelId);
     if (!lightningAccount) {
       throw new Error(`Lightning channel ${channelId} not found`);
@@ -331,7 +316,7 @@ export class PersonalWalletSDK {
       paymentRequest: `lnbc${amount}u1pvjluezsp5zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygspp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x86fux2ypatgddc6k63n7erqz25le42c4u4ecky03ylcqca784w`,
       amount,
       description,
-      expiry: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+      expiry: Date.now() + (24 * 60 * 60 * 1000),
       paymentHash: `${Date.now()}_hash`
     };
   }

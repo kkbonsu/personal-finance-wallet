@@ -94,13 +94,14 @@ The deployment uses a hybrid approach where Vite handles client-side assets in d
 
 ## Recent Changes
 
-- January 27, 2025: Implemented real Lightspark SDK integration
-  - Installed official @lightsparkdev/lightspark-sdk, @lightsparkdev/core, and @lightsparkdev/crypto-wasm packages
-  - Created LightsparkWalletSDK class with real API integration for Bitcoin and Lightning operations
-  - Replaced placeholder methods with actual Lightspark SDK calls for invoice creation, payment processing, and Bitcoin transactions
-  - Added proper authentication using Lightspark API credentials
-  - Maintained fallback to mock data when Lightspark credentials are not provided
-  - Separated Bitcoin and Lightning wallet derivation with independent account management
+- June 25, 2025: Implemented Spark SDK integration following https://docs.spark.money/wallet/developer-guide/create-first-wallet
+  - Removed incorrect Lightspark SDK packages due to React Native dependency conflicts
+  - Created SparkWalletSDK class following Spark SDK patterns for Bitcoin and Lightning operations
+  - Implemented proper Bitcoin derivation with Legacy (m/44'), SegWit (m/84'), and Taproot (m/86') paths
+  - Implemented Lightning Network derivation with separate path (m/45')
+  - Added BOLT11 invoice generation and parsing for Lightning transactions
+  - Integrated native crypto functions for secure mnemonic generation and payment hashes
+  - Maintained separate Bitcoin and Lightning account management as per Spark architecture
 
 ## Changelog
 
