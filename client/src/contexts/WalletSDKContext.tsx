@@ -11,13 +11,16 @@ import {
 interface WalletSDKContextType {
   sdk: PersonalWalletSDK | null;
   accounts: WalletAccount[];
+  bitcoinAccounts: WalletAccount[];
+  lightningAccounts: WalletAccount[];
+  starknetAccounts: WalletAccount[];
   isInitialized: boolean;
   isLoading: boolean;
   error: string | null;
   initializeWallet: (mnemonic?: string) => Promise<void>;
-  sendBitcoin: (to: string, amount: string) => Promise<Transaction>;
-  payLightningInvoice: (invoice: string) => Promise<Transaction>;
-  createLightningInvoice: (amount: number, description: string) => Promise<any>;
+  sendBitcoin: (to: string, amount: string, addressType?: 'legacy' | 'segwit' | 'taproot') => Promise<Transaction>;
+  payLightningInvoice: (invoice: string, channelId?: string) => Promise<Transaction>;
+  createLightningInvoice: (amount: number, description: string, channelId?: string) => Promise<any>;
   sendStarknetTransaction: (call: any) => Promise<Transaction>;
   refreshAccounts: () => Promise<void>;
 }
@@ -31,6 +34,9 @@ interface WalletSDKProviderProps {
 export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
   const [sdk, setSdk] = useState<PersonalWalletSDK | null>(null);
   const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+  const [bitcoinAccounts, setBitcoinAccounts] = useState<WalletAccount[]>([]);
+  const [lightningAccounts, setLightningAccounts] = useState<WalletAccount[]>([]);
+  const [starknetAccounts, setStarknetAccounts] = useState<WalletAccount[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,8 +67,17 @@ export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
 
     try {
       await sdk.initialize(mnemonic);
-      const walletAccounts = sdk.getAccounts();
-      setAccounts(walletAccounts);
+      
+      // Get all account types separately
+      const allAccounts = sdk.getAccounts();
+      const btcAccounts = sdk.getBitcoinAccounts();
+      const lnAccounts = sdk.getLightningAccounts();
+      const strkAccounts = sdk.getStarknetAccounts();
+      
+      setAccounts(allAccounts);
+      setBitcoinAccounts(btcAccounts);
+      setLightningAccounts(lnAccounts);
+      setStarknetAccounts(strkAccounts);
       setIsInitialized(true);
 
       // Save mnemonic securely (in production, use more secure storage)
@@ -81,19 +96,19 @@ export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
     }
   };
 
-  const sendBitcoin = async (to: string, amount: string): Promise<Transaction> => {
+  const sendBitcoin = async (to: string, amount: string, addressType: 'legacy' | 'segwit' | 'taproot' = 'segwit'): Promise<Transaction> => {
     if (!sdk) throw new Error('Wallet not initialized');
-    return sdk.sendBitcoin(to, amount);
+    return sdk.sendBitcoin(to, amount, addressType);
   };
 
-  const payLightningInvoice = async (invoice: string): Promise<Transaction> => {
+  const payLightningInvoice = async (invoice: string, channelId: string = 'channel_1'): Promise<Transaction> => {
     if (!sdk) throw new Error('Wallet not initialized');
-    return sdk.payLightningInvoice(invoice);
+    return sdk.payLightningInvoice(invoice, channelId);
   };
 
-  const createLightningInvoice = async (amount: number, description: string) => {
+  const createLightningInvoice = async (amount: number, description: string, channelId: string = 'channel_1') => {
     if (!sdk) throw new Error('Wallet not initialized');
-    return sdk.createLightningInvoice(amount, description);
+    return sdk.createLightningInvoice(amount, description, channelId);
   };
 
   const sendStarknetTransaction = async (call: any): Promise<Transaction> => {
@@ -106,8 +121,17 @@ export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
     
     try {
       await sdk.deriveAccounts();
-      const walletAccounts = sdk.getAccounts();
-      setAccounts(walletAccounts);
+      
+      // Update all account types
+      const allAccounts = sdk.getAccounts();
+      const btcAccounts = sdk.getBitcoinAccounts();
+      const lnAccounts = sdk.getLightningAccounts();
+      const strkAccounts = sdk.getStarknetAccounts();
+      
+      setAccounts(allAccounts);
+      setBitcoinAccounts(btcAccounts);
+      setLightningAccounts(lnAccounts);
+      setStarknetAccounts(strkAccounts);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to refresh accounts');
     }
@@ -116,6 +140,9 @@ export function WalletSDKProvider({ children }: WalletSDKProviderProps) {
   const value: WalletSDKContextType = {
     sdk,
     accounts,
+    bitcoinAccounts,
+    lightningAccounts,
+    starknetAccounts,
     isInitialized,
     isLoading,
     error,

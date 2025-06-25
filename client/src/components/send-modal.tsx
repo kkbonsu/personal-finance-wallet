@@ -22,7 +22,7 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
   const [network, setNetwork] = useState<"bitcoin" | "lightning" | "usdt">("lightning");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { sdk, accounts, sendBitcoin, payLightningInvoice } = useWalletSDK();
+  const { sdk, bitcoinAccounts, lightningAccounts, sendBitcoin, payLightningInvoice } = useWalletSDK();
 
   const handleSend = async () => {
     if (!sdk || !recipient || !amount) {
@@ -111,14 +111,15 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
 
   const getAccountBalance = () => {
     if (network === "lightning") {
-      const lightningAccount = accounts.find(acc => acc.type === "lightning");
-      return lightningAccount ? `${lightningAccount.balance} sats` : "0 sats";
+      // Show combined Lightning balance
+      const totalLightning = lightningAccounts.reduce((sum, acc) => sum + parseFloat(acc.balance), 0);
+      return `${totalLightning} sats`;
     } else if (network === "bitcoin") {
-      const bitcoinAccount = accounts.find(acc => acc.type === "bitcoin");
-      return bitcoinAccount ? `${bitcoinAccount.balance} BTC` : "0 BTC";
+      // Show combined Bitcoin balance
+      const totalBitcoin = bitcoinAccounts.reduce((sum, acc) => sum + parseFloat(acc.balance), 0);
+      return `${totalBitcoin.toFixed(8)} BTC`;
     } else if (network === "usdt") {
-      const usdtAccount = accounts.find(acc => acc.type === "usdt");
-      return usdtAccount ? `${usdtAccount.balance} USDT` : "0 USDT";
+      return "0 USDT"; // USDT handled separately
     }
     return "0";
   };

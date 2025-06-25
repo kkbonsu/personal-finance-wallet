@@ -22,7 +22,7 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
   const [lightningInvoice, setLightningInvoice] = useState("");
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const { toast } = useToast();
-  const { sdk, accounts, createLightningInvoice } = useWalletSDK();
+  const { sdk, bitcoinAccounts, lightningAccounts, createLightningInvoice } = useWalletSDK();
 
   const getNetworkIcon = (network: string) => {
     switch (network) {
@@ -39,11 +39,11 @@ export function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
 
   const getReceiveAddress = () => {
     if (network === "bitcoin") {
-      const bitcoinAccount = accounts.find(acc => acc.type === "bitcoin");
-      return bitcoinAccount?.address || "No Bitcoin wallet found";
+      // Default to Segwit address for receiving
+      const segwitAccount = bitcoinAccounts.find(acc => acc.derivationPath?.includes("84'"));
+      return segwitAccount?.address || bitcoinAccounts[0]?.address || "No Bitcoin wallet found";
     } else if (network === "usdt") {
-      const usdtAccount = accounts.find(acc => acc.type === "usdt");
-      return usdtAccount?.address || "No USDT wallet found";
+      return "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs"; // Mock USDT address
     }
     return "";
   };

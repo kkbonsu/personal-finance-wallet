@@ -92,6 +92,14 @@ The application is configured for deployment on Replit with autoscaling capabili
 
 The deployment uses a hybrid approach where Vite handles client-side assets in development, while Express serves both API routes and static files in production.
 
+## Recent Changes
+
+- January 27, 2025: Separated Bitcoin and Lightning wallet derivation
+  - Bitcoin accounts now use separate derivation paths for Legacy (m/44'), Segwit (m/84'), and Taproot (m/86')
+  - Lightning accounts use independent derivation (m/45') with support for multiple channels
+  - Enhanced account management with type-specific methods
+  - Improved send/receive modals to handle multiple account types
+
 ## Changelog
 
 - June 24, 2025. Initial setup

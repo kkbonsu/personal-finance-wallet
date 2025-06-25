@@ -16,6 +16,8 @@ export interface WalletAccount {
   network: string;
   balance: string;
   type: 'bitcoin' | 'lightning' | 'starknet';
+  derivationPath?: string;
+  privateKey?: string; // For internal use only
 }
 
 export interface Transaction {
@@ -49,7 +51,9 @@ export interface StarknetContractCall {
 export class PersonalWalletSDK {
   private config: WalletConfig;
   private mnemonic: string | null = null;
-  private accounts: Map<string, WalletAccount> = new Map();
+  private bitcoinAccounts: Map<string, WalletAccount> = new Map();
+  private lightningAccounts: Map<string, WalletAccount> = new Map();
+  private starknetAccounts: Map<string, WalletAccount> = new Map();
 
   constructor(config: WalletConfig) {
     this.config = config;
@@ -71,39 +75,98 @@ export class PersonalWalletSDK {
   async deriveAccounts(): Promise<void> {
     if (!this.mnemonic) throw new Error('Wallet not initialized');
 
-    // For demo purposes, create mock accounts
-    // In production, this would use actual SDK derivation
-    const bitcoinAccount: WalletAccount = {
-      address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+    // Derive Bitcoin accounts (separate derivation paths for each type)
+    await this.deriveBitcoinAccounts();
+    
+    // Derive Lightning accounts (independent from Bitcoin)
+    await this.deriveLightningAccounts();
+    
+    // Derive Starknet accounts
+    await this.deriveStarknetAccounts();
+  }
+
+  private async deriveBitcoinAccounts(): Promise<void> {
+    // Bitcoin Legacy (P2PKH) - m/44'/0'/0'/0/0
+    const legacyAccount: WalletAccount = {
+      address: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
       publicKey: '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
       network: this.config.network,
-      balance: '0.00521847',
-      type: 'bitcoin'
+      balance: '0.00156780',
+      type: 'bitcoin',
+      derivationPath: "m/44'/0'/0'/0/0"
     };
 
+    // Bitcoin Native Segwit (P2WPKH) - m/84'/0'/0'/0/0
+    const segwitAccount: WalletAccount = {
+      address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+      publicKey: '02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9',
+      network: this.config.network,
+      balance: '0.02340000',
+      type: 'bitcoin',
+      derivationPath: "m/84'/0'/0'/0/0"
+    };
+
+    // Bitcoin Taproot (P2TR) - m/86'/0'/0'/0/0
+    const taprootAccount: WalletAccount = {
+      address: 'bc1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297',
+      publicKey: '03d30199d74fb5a22d47b6e054e2f378cedacffcb89904a61d75d0dbd407143e65',
+      network: this.config.network,
+      balance: '0.00500000',
+      type: 'bitcoin',
+      derivationPath: "m/86'/0'/0'/0/0"
+    };
+
+    this.bitcoinAccounts.set('legacy', legacyAccount);
+    this.bitcoinAccounts.set('segwit', segwitAccount);
+    this.bitcoinAccounts.set('taproot', taprootAccount);
+  }
+
+  private async deriveLightningAccounts(): Promise<void> {
+    // Lightning Network uses separate derivation - m/45'/0'/0'/0/0
     const lightningAccount: WalletAccount = {
       address: '03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd',
       publicKey: '03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd',
       network: 'lightning',
-      balance: '15247',
-      type: 'lightning'
+      balance: '15247', // Balance in satoshis
+      type: 'lightning',
+      derivationPath: "m/45'/0'/0'/0/0"
     };
 
+    // Lightning channels can have multiple accounts
+    const lightningChannel2: WalletAccount = {
+      address: '02e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+      publicKey: '02e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+      network: 'lightning',
+      balance: '8432',
+      type: 'lightning',
+      derivationPath: "m/45'/0'/1'/0/0"
+    };
+
+    this.lightningAccounts.set('channel_1', lightningAccount);
+    this.lightningAccounts.set('channel_2', lightningChannel2);
+  }
+
+  private async deriveStarknetAccounts(): Promise<void> {
+    // Starknet uses different derivation - m/44'/9004'/0'/0/0
     const starknetAccount: WalletAccount = {
       address: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
       publicKey: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
       network: 'starknet',
       balance: '2.847',
-      type: 'starknet'
+      type: 'starknet',
+      derivationPath: "m/44'/9004'/0'/0/0"
     };
 
-    this.accounts.set('bitcoin', bitcoinAccount);
-    this.accounts.set('lightning', lightningAccount);
-    this.accounts.set('starknet', starknetAccount);
+    this.starknetAccounts.set('main', starknetAccount);
   }
 
-  // Bitcoin/Lightning operations
-  async sendBitcoin(toAddress: string, amount: string, feeRate?: number): Promise<Transaction> {
+  // Bitcoin operations
+  async sendBitcoin(toAddress: string, amount: string, addressType: 'legacy' | 'segwit' | 'taproot' = 'segwit', feeRate?: number): Promise<Transaction> {
+    const bitcoinAccount = this.bitcoinAccounts.get(addressType);
+    if (!bitcoinAccount) {
+      throw new Error(`Bitcoin ${addressType} account not found`);
+    }
+
     // Placeholder for Spark SDK integration
     const tx: Transaction = {
       id: `btc_${Date.now()}`,
@@ -114,29 +177,41 @@ export class PersonalWalletSDK {
       timestamp: new Date(),
       network: 'bitcoin',
       toAddress,
-      fromAddress: this.accounts.get('bitcoin')?.address
+      fromAddress: bitcoinAccount.address
     };
 
     return tx;
   }
 
-  async payLightningInvoice(invoice: string): Promise<Transaction> {
+  // Lightning operations (separate from Bitcoin)
+  async payLightningInvoice(invoice: string, channelId: string = 'channel_1'): Promise<Transaction> {
+    const lightningAccount = this.lightningAccounts.get(channelId);
+    if (!lightningAccount) {
+      throw new Error(`Lightning channel ${channelId} not found`);
+    }
+
     // Placeholder for Lightning SDK integration
     const tx: Transaction = {
       id: `ln_${Date.now()}`,
-      type: 'send',
-      amount: '0.001',
-      fee: '0.000001',
+      type: 'lightning',
+      amount: '1000', // sats
+      fee: '1', // sats
       status: 'pending',
       timestamp: new Date(),
       network: 'lightning',
-      toAddress: 'lightning_invoice'
+      toAddress: 'lightning_invoice',
+      fromAddress: lightningAccount.address
     };
 
     return tx;
   }
 
-  async createLightningInvoice(amount: number, description: string): Promise<LightningInvoice> {
+  async createLightningInvoice(amount: number, description: string, channelId: string = 'channel_1'): Promise<LightningInvoice> {
+    const lightningAccount = this.lightningAccounts.get(channelId);
+    if (!lightningAccount) {
+      throw new Error(`Lightning channel ${channelId} not found`);
+    }
+
     // Placeholder for Lightning invoice creation
     return {
       paymentRequest: `lnbc${amount}u1pvjluezsp5zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zygspp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x86fux2ypatgddc6k63n7erqz25le42c4u4ecky03ylcqca784w`,
@@ -149,6 +224,11 @@ export class PersonalWalletSDK {
 
   // Starknet operations
   async sendStarknetTransaction(call: StarknetContractCall): Promise<Transaction> {
+    const starknetAccount = this.starknetAccounts.get('main');
+    if (!starknetAccount) {
+      throw new Error('Starknet account not found');
+    }
+
     // Placeholder for Starknet.js integration
     const tx: Transaction = {
       id: `stark_${Date.now()}`,
@@ -158,7 +238,8 @@ export class PersonalWalletSDK {
       status: 'pending',
       timestamp: new Date(),
       network: 'starknet',
-      toAddress: call.contractAddress
+      toAddress: call.contractAddress,
+      fromAddress: starknetAccount.address
     };
 
     return tx;
@@ -166,11 +247,43 @@ export class PersonalWalletSDK {
 
   // Account management
   getAccounts(): WalletAccount[] {
-    return Array.from(this.accounts.values());
+    const allAccounts: WalletAccount[] = [];
+    
+    // Add all Bitcoin accounts
+    allAccounts.push(...Array.from(this.bitcoinAccounts.values()));
+    
+    // Add all Lightning accounts
+    allAccounts.push(...Array.from(this.lightningAccounts.values()));
+    
+    // Add all Starknet accounts
+    allAccounts.push(...Array.from(this.starknetAccounts.values()));
+    
+    return allAccounts;
   }
 
-  getAccount(type: 'bitcoin' | 'lightning' | 'starknet'): WalletAccount | undefined {
-    return this.accounts.get(type);
+  getBitcoinAccounts(): WalletAccount[] {
+    return Array.from(this.bitcoinAccounts.values());
+  }
+
+  getLightningAccounts(): WalletAccount[] {
+    return Array.from(this.lightningAccounts.values());
+  }
+
+  getStarknetAccounts(): WalletAccount[] {
+    return Array.from(this.starknetAccounts.values());
+  }
+
+  getAccount(type: 'bitcoin' | 'lightning' | 'starknet', subType?: string): WalletAccount | undefined {
+    switch (type) {
+      case 'bitcoin':
+        return this.bitcoinAccounts.get(subType || 'segwit');
+      case 'lightning':
+        return this.lightningAccounts.get(subType || 'channel_1');
+      case 'starknet':
+        return this.starknetAccounts.get(subType || 'main');
+      default:
+        return undefined;
+    }
   }
 
   getMnemonic(): string | null {
@@ -194,9 +307,9 @@ export class PersonalWalletSDK {
     return {
       // Public methods for external app integration
       getAccounts: () => this.getAccounts(),
-      sendBitcoin: (to: string, amount: string) => this.sendBitcoin(to, amount),
-      payLightningInvoice: (invoice: string) => this.payLightningInvoice(invoice),
-      createLightningInvoice: (amount: number, desc: string) => this.createLightningInvoice(amount, desc),
+      sendBitcoin: (to: string, amount: string, addressType?: 'legacy' | 'segwit' | 'taproot') => this.sendBitcoin(to, amount, addressType),
+      payLightningInvoice: (invoice: string, channelId?: string) => this.payLightningInvoice(invoice, channelId),
+      createLightningInvoice: (amount: number, desc: string, channelId?: string) => this.createLightningInvoice(amount, desc, channelId),
       sendStarknetTransaction: (call: StarknetContractCall) => this.sendStarknetTransaction(call),
       
       // Event listeners for integration
