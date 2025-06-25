@@ -19,6 +19,7 @@ import { SendPage } from "@/pages/send";
 import { ReceivePage } from "@/pages/receive";
 import { SwapPage } from "@/pages/swap";
 import { BuyPage } from "@/pages/buy";
+import { TransactionsPage } from "@/pages/transactions";
 
 function Router() {
   return (
@@ -33,6 +34,7 @@ function Router() {
       <Route path="/receive" component={ReceivePage} />
       <Route path="/swap" component={SwapPage} />
       <Route path="/buy" component={BuyPage} />
+      <Route path="/transactions" component={TransactionsPage} />
       <Route component={NotFound} />
     </Switch>
   );
