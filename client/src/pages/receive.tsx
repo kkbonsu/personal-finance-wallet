@@ -243,6 +243,20 @@ export function ReceivePage() {
                         Lightning Invoice Generated
                       </span>
                     </div>
+                    
+                    {/* QR Code for Lightning Invoice */}
+                    {qrCodeDataUrl && (
+                      <div className="flex justify-center mb-4">
+                        <div className="p-4 bg-white rounded-lg">
+                          <img 
+                            src={qrCodeDataUrl} 
+                            alt="Lightning Invoice QR Code"
+                            className="w-48 h-48"
+                          />
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="bg-white dark:bg-gray-800 p-3 rounded border break-all">
                       <p className="text-xs font-mono dark:text-white">{lightningInvoice}</p>
                     </div>
@@ -270,12 +284,25 @@ export function ReceivePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center">
-                <div className="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg mb-4">
-                  <QrCode className="h-24 w-24 mx-auto text-gray-400 dark:text-gray-500" />
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-                    QR Code would appear here
-                  </p>
-                </div>
+                {/* QR Code for Bitcoin Address */}
+                {qrCodeDataUrl ? (
+                  <div className="flex justify-center mb-4">
+                    <div className="p-4 bg-white rounded-lg">
+                      <img 
+                        src={qrCodeDataUrl} 
+                        alt="Bitcoin Address QR Code"
+                        className="w-48 h-48"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg mb-4">
+                    <QrCode className="h-24 w-24 mx-auto text-gray-400 dark:text-gray-500" />
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                      QR Code would appear here
+                    </p>
+                  </div>
+                )}
                 
                 <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                   <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Address</p>
