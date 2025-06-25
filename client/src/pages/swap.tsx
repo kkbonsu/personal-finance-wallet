@@ -11,6 +11,13 @@ import { formatCurrency } from "@/lib/utils";
 
 export function SwapPage() {
   const [, setLocation] = useLocation();
+  
+  // Get the 'from' parameter to determine where to navigate back
+  const getBackLocation = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get('from');
+    return from === 'wallet' ? '/wallet' : '/';
+  };
   const [fromAsset, setFromAsset] = useState("bitcoin");
   const [toAsset, setToAsset] = useState("lightning");
   const [fromAmount, setFromAmount] = useState("");
@@ -109,7 +116,7 @@ export function SwapPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation("/wallet")}
+            onClick={() => setLocation(getBackLocation())}
             className="dark:hover:bg-gray-700"
           >
             <ArrowLeft className="h-5 w-5" />

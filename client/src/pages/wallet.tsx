@@ -204,7 +204,7 @@ export default function Wallet() {
                       <Button 
                         className="flex-1" 
                         size="sm"
-                        onClick={() => setLocation("/send")}
+                        onClick={() => setLocation("/send?from=wallet")}
                       >
                         <Send className="h-4 w-4 mr-2" />
                         Send
@@ -213,7 +213,7 @@ export default function Wallet() {
                         variant="outline" 
                         className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" 
                         size="sm"
-                        onClick={() => setLocation("/receive")}
+                        onClick={() => setLocation("/receive?from=wallet")}
                       >
                         <QrCode className="h-4 w-4 mr-2" />
                         Receive

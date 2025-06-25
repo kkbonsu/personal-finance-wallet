@@ -21,6 +21,13 @@ interface Wallet {
 
 export function ReceivePage() {
   const [, setLocation] = useLocation();
+  
+  // Get the 'from' parameter to determine where to navigate back
+  const getBackLocation = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get('from');
+    return from === 'wallet' ? '/wallet' : '/';
+  };
   const [network, setNetwork] = useState<"bitcoin" | "lightning">("lightning");
   const [lightningAmount, setLightningAmount] = useState("");
   const [lightningDescription, setLightningDescription] = useState("");
@@ -107,7 +114,7 @@ export function ReceivePage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation("/wallet")}
+            onClick={() => setLocation(getBackLocation())}
             className="dark:hover:bg-gray-700"
           >
             <ArrowLeft className="h-5 w-5" />
