@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { ArrowLeft, QrCode, Copy, Zap, Bitcoin, CheckCircle } from "lucide-react
 import { useToast } from "@/hooks/use-toast";
 import { useWalletSDK } from "@/contexts/WalletSDKContext";
 import { truncateAddress } from "@/lib/utils";
+import QRCode from "qrcode";
 
 interface Wallet {
   id: number;
