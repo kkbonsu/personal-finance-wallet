@@ -100,7 +100,11 @@ The deployment uses a hybrid approach where Vite handles client-side assets in d
   - Implemented proper Bitcoin derivation with Legacy (m/44'), SegWit (m/84'), and Taproot (m/86') paths
   - Implemented Lightning Network derivation with separate path (m/45')
   - Added BOLT11 invoice generation and parsing for Lightning transactions
-  - Integrated native crypto functions for secure mnemonic generation and payment hashes
+  - Integrated real @scure/bip32, @scure/bip39, @noble/hashes cryptographic libraries
+  - Completely removed all USDT functionality from the entire application
+  - Converted modal-based flows to dedicated pages: /send, /receive, /swap, /buy
+  - Implemented standard navigation flows for better user experience
+  - Updated QuickActions component to use page navigation instead of modals
   - Maintained separate Bitcoin and Lightning account management as per Spark architecture
 
 ## Changelog

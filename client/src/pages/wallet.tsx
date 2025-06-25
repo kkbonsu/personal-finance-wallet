@@ -1,8 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { MobileHeader } from "@/components/mobile-header";
 import { BottomNavigation } from "@/components/bottom-navigation";
-import { SendModal } from "@/components/send-modal";
-import { ReceiveModal } from "@/components/receive-modal";
+
 import { WalletTypeModal } from "@/components/wallet-type-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,8 +23,7 @@ interface Wallet {
 
 export default function Wallet() {
   const [showBalances, setShowBalances] = useState(true);
-  const [showSendModal, setShowSendModal] = useState(false);
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [, setLocation] = useLocation();
   const [showWalletTypeModal, setShowWalletTypeModal] = useState(false);
   const { toast } = useToast();
 
@@ -206,7 +204,7 @@ export default function Wallet() {
                       <Button 
                         className="flex-1" 
                         size="sm"
-                        onClick={() => setShowSendModal(true)}
+                        onClick={() => setLocation("/send")}
                       >
                         <Send className="h-4 w-4 mr-2" />
                         Send
@@ -215,7 +213,7 @@ export default function Wallet() {
                         variant="outline" 
                         className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" 
                         size="sm"
-                        onClick={() => setShowReceiveModal(true)}
+                        onClick={() => setLocation("/receive")}
                       >
                         <QrCode className="h-4 w-4 mr-2" />
                         Receive
