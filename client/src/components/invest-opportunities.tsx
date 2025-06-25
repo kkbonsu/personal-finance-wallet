@@ -7,7 +7,7 @@ import { formatCurrency, formatPercentage, getRiskColor, formatTVL } from "@/lib
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useState } from "react";
 
-interface DefiProtocol {
+interface InvestProtocol {
   id: number;
   name: string;
   poolName: string;
@@ -19,7 +19,7 @@ interface DefiProtocol {
   isActive: boolean;
 }
 
-interface DefiPosition {
+interface InvestPosition {
   id: number;
   protocolName: string;
   poolName: string;
@@ -27,22 +27,22 @@ interface DefiPosition {
   isActive: boolean;
 }
 
-interface DefiOpportunitiesProps {
+interface InvestOpportunitiesProps {
   onShowRiskModal: (protocolId: number) => void;
 }
 
-export function DefiOpportunities({ onShowRiskModal }: DefiOpportunitiesProps) {
-  const { data: protocols, isLoading: protocolsLoading } = useQuery<DefiProtocol[]>({
-    queryKey: ["/api/defi/protocols"],
+export function InvestOpportunities({ onShowRiskModal }: InvestOpportunitiesProps) {
+  const { data: protocols, isLoading: protocolsLoading } = useQuery<InvestProtocol[]>({
+    queryKey: ["/api/invest/protocols"],
   });
 
-  const { data: positions } = useQuery<DefiPosition[]>({
-    queryKey: ["/api/defi/positions"],
+  const { data: positions } = useQuery<InvestPosition[]>({
+    queryKey: ["/api/invest/positions"],
   });
 
   const investMutation = useMutation({
     mutationFn: async ({ protocolId, amount, riskAccepted }: { protocolId: number; amount: number; riskAccepted: boolean }) => {
-      const response = await apiRequest("POST", "/api/defi/invest", {
+      const response = await apiRequest("POST", "/api/invest/invest", {
         protocolId,
         amount,
         riskAccepted
@@ -50,7 +50,7 @@ export function DefiOpportunities({ onShowRiskModal }: DefiOpportunitiesProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/defi/positions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/invest/positions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/portfolio"] });
     },
   });
@@ -77,7 +77,7 @@ export function DefiOpportunities({ onShowRiskModal }: DefiOpportunitiesProps) {
   return (
     <section className="px-4 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-primary dark:text-white">DeFi Opportunities</h2>
+        <h2 className="text-lg font-semibold text-primary dark:text-white">Investment Opportunities</h2>
         <div className="flex items-center space-x-1">
           <Info className="h-4 w-4 text-neutral dark:text-gray-400" />
           <span className="text-xs text-neutral dark:text-gray-400">Learn more</span>

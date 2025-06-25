@@ -1,14 +1,12 @@
-import { Home, Wallet, TrendingUp, History, User, Vault } from "lucide-react";
+import { Home, Wallet, TrendingUp, Settings } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
   { path: "/wallet", icon: Wallet, label: "Wallet" },
-  { path: "/defi", icon: TrendingUp, label: "DeFi" },
-  { path: "/vault", icon: Vault, label: "Vault" },
-  { path: "/history", icon: History, label: "History" },
-  { path: "/profile", icon: User, label: "Profile" },
+  { path: "/invest", icon: TrendingUp, label: "Invest" },
+  { path: "/settings", icon: Settings, label: "Settings" },
 ];
 
 export function BottomNavigation() {
@@ -17,7 +15,7 @@ export function BottomNavigation() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-40">
       <div className="max-w-md mx-auto px-4 py-2">
-        <div className="grid grid-cols-6 gap-1">
+        <div className="grid grid-cols-4 gap-1">
           {navItems.map(({ path, icon: Icon, label }) => {
             const isActive = location === path;
             return (

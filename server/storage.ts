@@ -25,16 +25,12 @@ export interface IStorage {
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
   updateTransactionStatus(id: number, status: string, txHash?: string): Promise<void>;
 
-  // DeFi operations
-  getUserDefiPositions(userId: number): Promise<DefiPosition[]>;
-  createDefiPosition(position: InsertDefiPosition): Promise<DefiPosition>;
-  updateDefiPosition(id: number, amount: string, usdValue: string): Promise<void>;
-  getActiveDefiProtocols(): Promise<DefiProtocol[]>;
-  createDefiProtocol(protocol: InsertDefiProtocol): Promise<DefiProtocol>;
-
-  // Vault operations
-  getUserVaultDeposits(userId: number): Promise<VaultDeposit[]>;
-  createVaultDeposit(deposit: InsertVaultDeposit): Promise<VaultDeposit>;
+  // Investment operations
+  getUserInvestPositions(userId: number): Promise<InvestPosition[]>;
+  createInvestPosition(position: InsertInvestPosition): Promise<InvestPosition>;
+  updateInvestPosition(id: number, amount: string, usdValue: string): Promise<void>;
+  getActiveInvestProtocols(): Promise<InvestProtocol[]>;
+  createInvestProtocol(protocol: InsertInvestProtocol): Promise<InvestProtocol>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -108,56 +104,41 @@ export class DatabaseStorage implements IStorage {
       .where(eq(transactions.id, id));
   }
 
-  async getUserDefiPositions(userId: number): Promise<DefiPosition[]> {
+  async getUserInvestPositions(userId: number): Promise<InvestPosition[]> {
     return await db
       .select()
-      .from(defiPositions)
-      .where(eq(defiPositions.userId, userId));
+      .from(investPositions)
+      .where(eq(investPositions.userId, userId));
   }
 
-  async createDefiPosition(insertPosition: InsertDefiPosition): Promise<DefiPosition> {
+  async createInvestPosition(insertPosition: InsertInvestPosition): Promise<InvestPosition> {
     const [position] = await db
-      .insert(defiPositions)
+      .insert(investPositions)
       .values(insertPosition)
       .returning();
     return position;
   }
 
-  async updateDefiPosition(id: number, amount: string, usdValue: string): Promise<void> {
+  async updateInvestPosition(id: number, amount: string, usdValue: string): Promise<void> {
     await db
-      .update(defiPositions)
+      .update(investPositions)
       .set({ amount, usdValue })
-      .where(eq(defiPositions.id, id));
+      .where(eq(investPositions.id, id));
   }
 
-  async getActiveDefiProtocols(): Promise<DefiProtocol[]> {
+  async getActiveInvestProtocols(): Promise<InvestProtocol[]> {
     return await db
       .select()
-      .from(defiProtocols)
-      .where(eq(defiProtocols.isActive, true));
+      .from(investProtocols)
+      .where(eq(investProtocols.isActive, true));
   }
 
-  async createDefiProtocol(insertProtocol: InsertDefiProtocol): Promise<DefiProtocol> {
+  async createInvestProtocol(insertProtocol: InsertInvestProtocol): Promise<InvestProtocol> {
     const [protocol] = await db
-      .insert(defiProtocols)
+      .insert(investProtocols)
       .values(insertProtocol)
       .returning();
     return protocol;
-  }
-
-  async getUserVaultDeposits(userId: number): Promise<VaultDeposit[]> {
-    return await db
-      .select()
-      .from(vaultDeposits)
-      .where(eq(vaultDeposits.userId, userId));
-  }
-
-  async createVaultDeposit(insertDeposit: InsertVaultDeposit): Promise<VaultDeposit> {
-    const [deposit] = await db
-      .insert(vaultDeposits)
-      .values(insertDeposit)
-      .returning();
-    return deposit;
   }
 }
 
@@ -165,18 +146,16 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private wallets: Map<number, Wallet>;
   private transactions: Map<number, Transaction>;
-  private defiPositions: Map<number, DefiPosition>;
-  private vaultDeposits: Map<number, VaultDeposit>;
-  private defiProtocols: Map<number, DefiProtocol>;
+  private investPositions: Map<number, InvestPosition>;
+  private investProtocols: Map<number, InvestProtocol>;
   private currentId: number;
 
   constructor() {
     this.users = new Map();
     this.wallets = new Map();
     this.transactions = new Map();
-    this.defiPositions = new Map();
-    this.vaultDeposits = new Map();
-    this.defiProtocols = new Map();
+    this.investPositions = new Map();
+    this.investProtocols = new Map();
     this.currentId = 1;
     this.seedData();
   }
@@ -218,20 +197,20 @@ export class MemStorage implements IStorage {
     this.wallets.set(1, bitcoinWallet);
     this.wallets.set(2, lightningWallet);
 
-    // Create demo DeFi protocols
-    const starknetProtocol: DefiProtocol = {
+    // Create demo investment protocols
+    const starknetProtocol: InvestProtocol = {
       id: 1,
       name: "Starknet",
-      poolName: "USDC Pool",
+      poolName: "STRK Pool",
       network: "starknet",
-      tokenSymbol: "USDC",
+      tokenSymbol: "STRK",
       apy: "8.20",
       tvl: "2400000.00",
       riskLevel: "low",
       isActive: true
     };
 
-    const lightningProtocol: DefiProtocol = {
+    const lightningProtocol: InvestProtocol = {
       id: 2,
       name: "Lightning Network",
       poolName: "Yield Farm",
@@ -243,17 +222,17 @@ export class MemStorage implements IStorage {
       isActive: true
     };
 
-    this.defiProtocols.set(1, starknetProtocol);
-    this.defiProtocols.set(2, lightningProtocol);
+    this.investProtocols.set(1, starknetProtocol);
+    this.investProtocols.set(2, lightningProtocol);
 
-    // Create demo DeFi position
-    const defiPosition: DefiPosition = {
+    // Create demo investment position
+    const investPosition: InvestPosition = {
       id: 1,
       userId: 1,
       protocolName: "Starknet",
-      poolName: "USDC Pool",
+      poolName: "STRK Pool",
       network: "starknet",
-      tokenSymbol: "USDC",
+      tokenSymbol: "STRK",
       amount: "1250.00000000",
       usdValue: "1250.00",
       apy: "8.20",
@@ -262,25 +241,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date()
     };
 
-    this.defiPositions.set(1, defiPosition);
-
-    // Create demo vault deposit
-    const unlockDate = new Date();
-    unlockDate.setMonth(unlockDate.getMonth() + 3);
-    
-    const vaultDeposit: VaultDeposit = {
-      id: 1,
-      userId: 1,
-      amount: "0.12000000",
-      usdValue: "4500.00",
-      lockPeriod: 90,
-      unlockDate,
-      currentYield: "4.20",
-      isActive: true,
-      createdAt: new Date()
-    };
-
-    this.vaultDeposits.set(1, vaultDeposit);
+    this.investPositions.set(1, investPosition);
 
     // Create demo transactions
     const transactions: Transaction[] = [
@@ -398,56 +359,40 @@ export class MemStorage implements IStorage {
     }
   }
 
-  async getUserDefiPositions(userId: number): Promise<DefiPosition[]> {
-    return Array.from(this.defiPositions.values())
+  async getUserInvestPositions(userId: number): Promise<InvestPosition[]> {
+    return Array.from(this.investPositions.values())
       .filter(position => position.userId === userId && position.isActive);
   }
 
-  async createDefiPosition(insertPosition: InsertDefiPosition): Promise<DefiPosition> {
+  async createInvestPosition(insertPosition: InsertInvestPosition): Promise<InvestPosition> {
     const id = this.currentId++;
-    const position: DefiPosition = { 
+    const position: InvestPosition = { 
       ...insertPosition, 
       id, 
       createdAt: new Date() 
     };
-    this.defiPositions.set(id, position);
+    this.investPositions.set(id, position);
     return position;
   }
 
-  async updateDefiPosition(id: number, amount: string, usdValue: string): Promise<void> {
-    const position = this.defiPositions.get(id);
+  async updateInvestPosition(id: number, amount: string, usdValue: string): Promise<void> {
+    const position = this.investPositions.get(id);
     if (position) {
       position.amount = amount;
       position.usdValue = usdValue;
-      this.defiPositions.set(id, position);
+      this.investPositions.set(id, position);
     }
   }
 
-  async getActiveDefiProtocols(): Promise<DefiProtocol[]> {
-    return Array.from(this.defiProtocols.values()).filter(protocol => protocol.isActive);
+  async getActiveInvestProtocols(): Promise<InvestProtocol[]> {
+    return Array.from(this.investProtocols.values()).filter(protocol => protocol.isActive);
   }
 
-  async createDefiProtocol(insertProtocol: InsertDefiProtocol): Promise<DefiProtocol> {
+  async createInvestProtocol(insertProtocol: InsertInvestProtocol): Promise<InvestProtocol> {
     const id = this.currentId++;
-    const protocol: DefiProtocol = { ...insertProtocol, id };
-    this.defiProtocols.set(id, protocol);
+    const protocol: InvestProtocol = { ...insertProtocol, id };
+    this.investProtocols.set(id, protocol);
     return protocol;
-  }
-
-  async getUserVaultDeposits(userId: number): Promise<VaultDeposit[]> {
-    return Array.from(this.vaultDeposits.values())
-      .filter(deposit => deposit.userId === userId && deposit.isActive);
-  }
-
-  async createVaultDeposit(insertDeposit: InsertVaultDeposit): Promise<VaultDeposit> {
-    const id = this.currentId++;
-    const deposit: VaultDeposit = { 
-      ...insertDeposit, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.vaultDeposits.set(id, deposit);
-    return deposit;
   }
 }
 

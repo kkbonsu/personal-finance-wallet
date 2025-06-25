@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { MobileHeader } from "@/components/mobile-header";
 import { BottomNavigation } from "@/components/bottom-navigation";
-
+import { useLocation } from "wouter";
 import { WalletTypeModal } from "@/components/wallet-type-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

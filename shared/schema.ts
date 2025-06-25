@@ -33,7 +33,7 @@ export const transactions = pgTable("transactions", {
   timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
-export const defiPositions = pgTable("defi_positions", {
+export const investPositions = pgTable("invest_positions", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   protocolName: text("protocol_name").notNull(),
@@ -48,19 +48,7 @@ export const defiPositions = pgTable("defi_positions", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const vaultDeposits = pgTable("vault_deposits", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  amount: decimal("amount", { precision: 18, scale: 8 }).notNull(),
-  usdValue: decimal("usd_value", { precision: 18, scale: 2 }).notNull(),
-  lockPeriod: integer("lock_period").notNull(), // days
-  unlockDate: timestamp("unlock_date").notNull(),
-  currentYield: decimal("current_yield", { precision: 5, scale: 2 }).notNull(),
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-export const defiProtocols = pgTable("defi_protocols", {
+export const investProtocols = pgTable("invest_protocols", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   poolName: text("pool_name").notNull(),
@@ -70,6 +58,7 @@ export const defiProtocols = pgTable("defi_protocols", {
   tvl: decimal("tvl", { precision: 18, scale: 2 }).notNull(),
   riskLevel: text("risk_level").notNull(),
   isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -86,17 +75,12 @@ export const insertTransactionSchema = createInsertSchema(transactions).omit({
   timestamp: true,
 });
 
-export const insertDefiPositionSchema = createInsertSchema(defiPositions).omit({
+export const insertInvestPositionSchema = createInsertSchema(investPositions).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertVaultDepositSchema = createInsertSchema(vaultDeposits).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertDefiProtocolSchema = createInsertSchema(defiProtocols).omit({
+export const insertInvestProtocolSchema = createInsertSchema(investProtocols).omit({
   id: true,
 });
 
@@ -104,11 +88,9 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Wallet = typeof wallets.$inferSelect;
 export type Transaction = typeof transactions.$inferSelect;
-export type DefiPosition = typeof defiPositions.$inferSelect;
-export type VaultDeposit = typeof vaultDeposits.$inferSelect;
-export type DefiProtocol = typeof defiProtocols.$inferSelect;
+export type InvestPosition = typeof investPositions.$inferSelect;
+export type InvestProtocol = typeof investProtocols.$inferSelect;
 export type InsertWallet = z.infer<typeof insertWalletSchema>;
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
-export type InsertDefiPosition = z.infer<typeof insertDefiPositionSchema>;
-export type InsertVaultDeposit = z.infer<typeof insertVaultDepositSchema>;
-export type InsertDefiProtocol = z.infer<typeof insertDefiProtocolSchema>;
+export type InsertInvestPosition = z.infer<typeof insertInvestPositionSchema>;
+export type InsertInvestProtocol = z.infer<typeof insertInvestProtocolSchema>;

@@ -28,10 +28,9 @@ The application follows a full-stack architecture with a clear separation betwee
 ### Database Schema
 The application uses a relational database with the following main entities:
 - **Users**: Basic user authentication and management
-- **Wallets**: Multi-currency wallet support (Bitcoin, USDT, STRK)
+- **Wallets**: Multi-currency wallet support (Bitcoin, Lightning, STRK)
 - **Transactions**: Complete transaction history with status tracking
-- **DeFi Positions**: Tracking of decentralized finance investments
-- **Vault Deposits**: Time-locked savings deposits with yield tracking
+- **Investment Positions**: Tracking of investment opportunities and yields
 
 ### Authentication System
 - Passcode-based authentication with biometric support
@@ -54,10 +53,9 @@ The application uses a relational database with the following main entities:
 
 1. **User Authentication**: Users authenticate using passcode or biometrics
 2. **Wallet Operations**: Create wallets, send/receive transactions across different networks
-3. **DeFi Integration**: Users can deposit funds into DeFi protocols for yield generation
-4. **Vault System**: Time-locked deposits with yield rewards
-5. **Transaction Tracking**: All operations are recorded with complete audit trails
-6. **Portfolio Overview**: Real-time portfolio valuation and performance tracking
+3. **Investment Integration**: Users can deposit funds into investment protocols for yield generation
+4. **Transaction Tracking**: All operations are recorded with complete audit trails
+5. **Portfolio Overview**: Real-time portfolio valuation and performance tracking
 
 ## External Dependencies
 
@@ -105,6 +103,9 @@ The deployment uses a hybrid approach where Vite handles client-side assets in d
   - Converted modal-based flows to dedicated pages: /send, /receive, /swap, /buy
   - Implemented standard navigation flows for better user experience
   - Updated QuickActions component to use page navigation instead of modals
+  - Removed vault functionality and all vault-related features
+  - Renamed DeFi to Invest throughout the application for better branding
+  - Updated navigation to remove vault tab and consolidate to 4 main tabs
   - Maintained separate Bitcoin and Lightning account management as per Spark architecture
 
 ## Changelog

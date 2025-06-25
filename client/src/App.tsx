@@ -10,23 +10,29 @@ import { WalletSDKProvider } from "@/contexts/WalletSDKContext";
 import { WalletLockScreen } from "@/components/wallet-lock-screen";
 import Home from "@/pages/home";
 import Wallet from "@/pages/wallet";
-import DeFi from "@/pages/defi";
-import VaultPage from "@/pages/vault";
+import Invest from "@/pages/invest";
 import History from "@/pages/history";
-import SettingsPage from "@/pages/settings";
+import Settings from "@/pages/settings";
 import IntegrationDemo from "@/pages/integration-demo";
 import NotFound from "@/pages/not-found";
+import { SendPage } from "@/pages/send";
+import { ReceivePage } from "@/pages/receive";
+import { SwapPage } from "@/pages/swap";
+import { BuyPage } from "@/pages/buy";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/wallet" component={Wallet} />
-      <Route path="/defi" component={DeFi} />
-      <Route path="/vault" component={VaultPage} />
+      <Route path="/invest" component={Invest} />
       <Route path="/history" component={History} />
-      <Route path="/profile" component={SettingsPage} />
-      <Route path="/integration" component={IntegrationDemo} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/integration-demo" component={IntegrationDemo} />
+      <Route path="/send" component={SendPage} />
+      <Route path="/receive" component={ReceivePage} />
+      <Route path="/swap" component={SwapPage} />
+      <Route path="/buy" component={BuyPage} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -47,13 +47,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = 1; // Demo user
       const wallets = await storage.getUserWallets(userId);
-      const defiPositions = await storage.getUserDefiPositions(userId);
-      const vaultDeposits = await storage.getUserVaultDeposits(userId);
+      const investPositions = await storage.getUserInvestPositions(userId);
       
       const totalWalletValue = wallets.reduce((sum, wallet) => sum + parseFloat(wallet.usdValue), 0);
-      const totalDefiValue = defiPositions.reduce((sum, position) => sum + parseFloat(position.usdValue), 0);
-      const totalVaultValue = vaultDeposits.reduce((sum, deposit) => sum + parseFloat(deposit.usdValue), 0);
-      const totalValue = totalWalletValue + totalDefiValue + totalVaultValue;
+      const totalInvestValue = investPositions.reduce((sum, position) => sum + parseFloat(position.usdValue), 0);
+      const totalValue = totalWalletValue + totalInvestValue;
 
       res.json({
         totalValue: totalValue.toFixed(2),
@@ -133,27 +131,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // DeFi operations
-  app.get("/api/defi/protocols", async (req, res) => {
+  // Investment operations
+  app.get("/api/invest/protocols", async (req, res) => {
     try {
-      const protocols = await storage.getActiveDefiProtocols();
+      const protocols = await storage.getActiveInvestProtocols();
       res.json(protocols);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch DeFi protocols" });
+      res.status(500).json({ error: "Failed to fetch investment protocols" });
     }
   });
 
-  app.get("/api/defi/positions", async (req, res) => {
+  app.get("/api/invest/positions", async (req, res) => {
     try {
       const userId = 1;
-      const positions = await storage.getUserDefiPositions(userId);
+      const positions = await storage.getUserInvestPositions(userId);
       res.json(positions);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch DeFi positions" });
+      res.status(500).json({ error: "Failed to fetch investment positions" });
     }
   });
 
-  app.post("/api/defi/invest", async (req, res) => {
+  app.post("/api/invest/invest", async (req, res) => {
     try {
       const { protocolId, amount, riskAccepted } = req.body;
       
@@ -161,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Risk disclosure must be accepted" });
       }
 
-      const protocols = await storage.getActiveDefiProtocols();
+      const protocols = await storage.getActiveInvestProtocols();
       const protocol = protocols.find(p => p.id === protocolId);
       
       if (!protocol) {
@@ -169,7 +167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create investment position
-      const position = await storage.createDefiPosition({
+      const position = await storage.createInvestPosition({
         userId: 1,
         protocolName: protocol.name,
         poolName: protocol.poolName,
@@ -201,52 +199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Vault operations
-  app.get("/api/vault/deposits", async (req, res) => {
-    try {
-      const userId = 1;
-      const deposits = await storage.getUserVaultDeposits(userId);
-      res.json(deposits);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch vault deposits" });
-    }
-  });
 
-  app.post("/api/vault/deposit", async (req, res) => {
-    try {
-      const { amount, lockPeriod } = req.body;
-      
-      const unlockDate = new Date();
-      unlockDate.setDate(unlockDate.getDate() + lockPeriod);
-      
-      const deposit = await storage.createVaultDeposit({
-        userId: 1,
-        amount: amount.toString(),
-        usdValue: (amount * 40000).toString(), // Mock BTC price
-        lockPeriod,
-        unlockDate,
-        currentYield: "4.20", // Mock yield
-        isActive: true
-      });
-
-      // Create transaction record
-      await storage.createTransaction({
-        userId: 1,
-        walletId: 1,
-        type: "defi_deposit",
-        amount: amount.toString(),
-        usdAmount: (amount * 40000).toString(),
-        fee: "0",
-        status: "confirmed",
-        description: "Bitcoin Vault Deposit",
-        network: "lightning"
-      });
-
-      res.json({ success: true, deposit });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create vault deposit" });
-    }
-  });
 
   // Lightning Network operations (mocked for MVP)
   app.post("/api/lightning/send", async (req, res) => {
