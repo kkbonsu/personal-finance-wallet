@@ -33,6 +33,7 @@ export function ReceivePage() {
   const [lightningDescription, setLightningDescription] = useState("");
   const [lightningInvoice, setLightningInvoice] = useState("");
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const { toast } = useToast();
   const { sdk, bitcoinAccounts, lightningAccounts, createLightningInvoice } = useWalletSDK();
   
@@ -105,6 +106,43 @@ export function ReceivePage() {
     setLightningDescription("");
     setLightningInvoice("");
   };
+
+  // Generate QR code for the current address/invoice
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        let qrData = "";
+        
+        if (network === "bitcoin") {
+          const address = getReceiveAddress();
+          if (address && address !== "No Bitcoin wallet found") {
+            qrData = address;
+          }
+        } else if (network === "lightning" && lightningInvoice) {
+          qrData = lightningInvoice;
+        }
+        
+        if (qrData) {
+          const qrCodeUrl = await QRCode.toDataURL(qrData, {
+            width: 256,
+            margin: 2,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            }
+          });
+          setQrCodeDataUrl(qrCodeUrl);
+        } else {
+          setQrCodeDataUrl("");
+        }
+      } catch (error) {
+        console.error("Error generating QR code:", error);
+        setQrCodeDataUrl("");
+      }
+    };
+
+    generateQRCode();
+  }, [network, lightningInvoice, bitcoinAccounts, wallets]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
