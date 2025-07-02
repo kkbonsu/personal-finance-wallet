@@ -1,5 +1,5 @@
 ---
-title: "Personal Finance Wallet"
+title: "Starting Personal Finance Wallet"
 seoTitle: "Personal Finance Wallet"
 seoDescription: "My idea of personal finance in the future"
 datePublished: Tue Jun 03 2025 08:01:39 GMT+0000 (Coordinated Universal Time)
